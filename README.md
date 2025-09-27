@@ -11,3 +11,6 @@ En este repositorio se presentarán los avances del grupo 04, cuyos integrantes 
 ---
 ### Wiki
 Puede acceder a la Wiki mediante el siguiente [enlace](https://github.com/JaimeYi/GRUPO04-2025-PROYINF/wiki).
+
+### Levantamiento del proyecto
+Para obtener más información sobre como levantar el proyecto de manera local por favor dirigirse a la carpeta `Proyecto`
