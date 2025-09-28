@@ -1,7 +1,4 @@
 # Aplicación Node.js con Docker y PostgreSQL
-
-Este es un ejemplo de una aplicación Node.js usando Express, Docker y PostgreSQL. Incluye configuración para desarrollo y producción.
-
 ## Requisitos Previos
 
 - [Docker](https://docs.docker.com/get-docker/)
@@ -12,19 +9,18 @@ Este es un ejemplo de una aplicación Node.js usando Express, Docker y PostgreSQ
 ## Instalación
 
 ### 1. Clonar el repositorio
-git clone https://github.com/MatiasBV/analisis-y-diseno-de-software.git  
+git clone https://github.com/JaimeYi/GRUPO04-2025-PROYINF.git
 (debe tener docker-desktop abierto en todo momento)
 Ejecutar en terminal:
 
-1. Deben navegar hasta la carpeta analisis-y-diseno-de-software/mi-proyecto-node-docker  
+1. Deben navegar hasta la carpeta GRUPO04-2025-PROYINF/Proyecto
 
-2. (les instalará las dependencias se suele demorar un poco la primera vez con esto levantan el proyecto)  
+2. (Se instalarn las dependencias lo cual suele demorar un poco la primera vez, con esto se levanta el proyecto)  
 docker compose up --build
 
 (para detener los contenedores)  
 docker compose down -v
 
-si no les ejecuta asegurense de estar en la carpeta correcta  
 si trabajan desde windows deben tener instalado WSL2 y tenerlo activado en docker desktop  
 esto se puede verificar en  
 Configuración   
