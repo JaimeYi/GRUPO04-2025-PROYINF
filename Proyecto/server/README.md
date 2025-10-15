@@ -13,7 +13,7 @@ git clone https://github.com/JaimeYi/GRUPO04-2025-PROYINF.git
 (debe tener docker-desktop abierto en todo momento)
 Ejecutar en terminal:
 
-1. Deben navegar hasta la carpeta GRUPO04-2025-PROYINF/Proyecto
+1. Deben navegar hasta la carpeta GRUPO04-2025-PROYINF/Proyecto/server
 
 2. (Se instalarn las dependencias lo cual suele demorar un poco la primera vez, con esto se levanta el proyecto)  
 docker compose up --build

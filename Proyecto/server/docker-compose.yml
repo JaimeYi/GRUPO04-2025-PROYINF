@@ -13,7 +13,7 @@ services:
     depends_on:
       - postgres_db
     volumes:
-      - ./:/app
+      - .:/app
       - /app/node_modules
 
   postgres_db:
