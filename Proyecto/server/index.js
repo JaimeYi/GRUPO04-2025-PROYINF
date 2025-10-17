@@ -1,7 +1,10 @@
 const express = require("express");
-const pool = require("./db"); // Importar la conexión
-const app = express();
+const cors = require("cors");
 const port = 5000;
+
+const app = express();
+
+const userManagementRoutes = require("./controller/userManagement");
 
 // Ruta de prueba que guarda un mensaje en la base de datos
 // app.get("/save", async (req, res) => {
@@ -29,6 +32,12 @@ const port = 5000;
 //         res.status(500).send("Error");
 //     }
 // });
+
+// middlewares
+app.use(express.json()); // lectura de JSON
+app.use(cors()); // habilitar request y respons entre distintos puertos
+
+app.use(userManagementRoutes);
 
 app.get("/", (req, res) => {
     res.send("<h1>Home página créditos de consumo</h1>");
