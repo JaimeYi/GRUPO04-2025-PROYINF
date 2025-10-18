@@ -1,17 +1,15 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom" 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/auth";
 import Navbar from "../components/Navbar";
-
-// TODO: implementar Cookie que almacene la informacion del usuario y mantenga la sesion iniciada
 
 function Login() {
     const navigate = useNavigate();
-
+    const { setUser } = useAuth();
     const [formData, setFormData] = useState({
         rut: "",
         contrasena: "",
     });
-
     const [error, setError] = useState("");
 
     const handleChange = (e) => {
@@ -26,24 +24,30 @@ function Login() {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5000/api/userManagement/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+            const response = await fetch(
+                "http://localhost:5000/api/userManagement/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: "include",
+                }
+            );
 
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(result.error || 'Ocurrió un error desconocido.');
+                throw new Error(
+                    result.error || "Ocurrió un error desconocido."
+                );
             }
 
-            console.log('Respuesta del servidor:', result);
-            alert(`Inicio de sesión exitoso! Serás redirigido.`);
-            navigate('/')
+            setUser(result.user);
 
+            alert(`Inicio de sesión exitoso! Serás redirigido.`);
+            navigate("/");
         } catch (error) {
             setError(error.message);
         }

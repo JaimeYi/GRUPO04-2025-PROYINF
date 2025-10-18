@@ -1,26 +1,46 @@
-import "../css/navbar.css"
-import Logo from "../media/svg/banking-online-web-bank-svgrepo-com.svg?react"
-
-// TODO: Una vez implementada la cookie para mantener la sesion iniciada, incluir condicionales para cambiar las opciones disponibles dependiendo si el usuario esta logeado o no
+import "../css/navbar.css";
+import Logo from "../media/svg/banking-online-web-bank-svgrepo-com.svg";
+import { useAuth } from "./auth";
+import {Link} from "react-router-dom"
 
 function Navbar() {
+    const { user, logout, isLoading } = useAuth(); // Usar esta linea en cada vista que se requiera verificar si el usuario esta logeado o no
+
+    const logoLink = (
+        <Link to="/" className="logo">
+            <img src={Logo} alt="Logo" className="logo" />
+        </Link>
+    );
+
+    if (isLoading) {
+        return null;
+    }
+
     return (
-        <div className="navbar">
-            <img src={Logo} alt="logo" href="/">
-            </img>
+        <nav className="navbar">
+            {logoLink}
             <ul className="listButtons">
-                <li>
-                    <a href="/login">
-                        Iniciar sesión
-                    </a>
-                </li>
-                <li>
-                    <a href="/register">
-                        Registrarse
-                    </a>
-                </li>
+                {user ? ( // De esta manera se utiliza el condicional para mostrar cierta opcion dependiendo si el usuario esta logeado o no
+                    <>
+                        <li>
+                            <a href="/profile">Mi perfil</a>
+                        </li>
+                        <li>
+                            <button onClick={logout}>Cerrar Sesión</button>
+                        </li>
+                    </>
+                ) : (
+                    <>
+                        <li>
+                            <a href="/login">Iniciar sesión</a>
+                        </li>
+                        <li>
+                            <a href="/register">Registrarse</a>
+                        </li>
+                    </>
+                )}
             </ul>
-        </div>
+        </nav>
     );
 }
 

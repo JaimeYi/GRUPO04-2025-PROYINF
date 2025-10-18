@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const pool = require("../db");
+const jwt = require("jsonwebtoken");
+const verifyToken = require("../middleware/verifyToken");
 
 const router = Router();
 
@@ -59,7 +61,7 @@ router.post("/api/userManagement/login", async (req, res) => {
 
     try {
         const result = await pool.query(
-            "SELECT rut, contraseña, nombre FROM cliente WHERE rut = ($1)",
+            "SELECT * FROM cliente WHERE rut = ($1)",
             [rut]
         );
 
@@ -70,7 +72,6 @@ router.post("/api/userManagement/login", async (req, res) => {
         }
 
         const cliente = result.rows[0];
-        console.log(cliente);
         const hashedPassword = cliente.contraseña;
         const name = cliente.nombre;
 
@@ -82,15 +83,48 @@ router.post("/api/userManagement/login", async (req, res) => {
             });
         }
 
+        const payload = {
+            rut: cliente.rut,
+            mail: cliente.correo,
+            name: cliente.nombre,
+            lastName: cliente.apellido
+        }
+
+        const token =  jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: '1h'
+        })
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // Solo enviar por HTTPS en producción
+            maxAge: 3600000
+        })
+
         res.status(200).json({
             message: "Login exitoso",
             name,
+            user: payload
         });
     } catch (err) {
+        console.log(err);
         return res.status(500).json({
             error: "Ocurrio un error inesperado.",
         });
     }
 });
+
+router.get('/api/userManagement/verify', verifyToken, (req, res) => {
+    res.status(200).json(req.user)
+})
+
+router.post("/api/userManagement/logout", (req, res) => {
+    res.cookie('token', '', {
+        httpOnly: true,
+        expires: new Date(0)
+    });
+    res.status(200).json({
+        message: 'Sesión cerrada correctamente.'
+    })
+})
 
 module.exports = router;

@@ -8,8 +8,8 @@
 }
 
 .navbar img{
-    width: 40px;
-    padding: 10px;
+    width: 50px;
+    padding: 5px;
 }
 
 .navbar ul {
@@ -22,9 +22,9 @@
     list-style-type: none;
 }
 
-.navbar a {
+.navbar .listButtons a {
     background-color: rgb(252, 199, 28);
-    color: #d8d8d8;
+    color: #242424;
     border-radius: 30px;
     margin: 5px;
     padding: 15px;
@@ -32,11 +32,11 @@
     text-shadow: none;
 }
 
-.navbar a:hover{
+.navbar .listButtons a:hover{
     background-color: rgb(201, 159, 23);
 }
 
-.navbar a:active{
+.navbar .listButtons a:active{
     background-color: rgb(155, 123, 18);
 }
 
