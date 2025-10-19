@@ -20,22 +20,22 @@ function Navbar() {
         <nav className="navbar">
             {logoLink}
             <ul className="listButtons">
-                {user ? ( // De esta manera se utiliza el condicional para mostrar cierta opcion dependiendo si el usuario esta logeado o no
-                    <>
-                        <li>
-                            <a href="/profile">Mi perfil</a>
-                        </li>
-                        <li>
-                            <button onClick={logout}>Cerrar Sesión</button>
-                        </li>
-                    </>
-                ) : (
+                {(user === null || user.userType === 'noCliente') ? ( // De esta manera se utiliza el condicional para mostrar cierta opcion dependiendo si el usuario esta logeado o no
                     <>
                         <li>
                             <a href="/login">Iniciar sesión</a>
                         </li>
                         <li>
                             <a href="/register">Registrarse</a>
+                        </li>
+                    </>
+                ) : (
+                    <>
+                        <li>
+                            <a href="/profile">Mi perfil</a>
+                        </li>
+                        <li>
+                            <button onClick={logout}>Cerrar Sesión</button>
                         </li>
                     </>
                 )}

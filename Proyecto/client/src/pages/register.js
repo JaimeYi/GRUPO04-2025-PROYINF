@@ -35,6 +35,7 @@ function Register() {
             }
 
             aux = sum % 11;
+            aux = 11- aux;
 
             switch (aux) {
                 case 10:
@@ -44,7 +45,7 @@ function Register() {
                     aux = "0";
                     break;
                 default:
-                    aux.toString();
+                    aux = aux.toString();
             }
 
             if (aux !== dv) {

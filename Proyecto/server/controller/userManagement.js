@@ -6,31 +6,35 @@ const verifyToken = require("../middleware/verifyToken");
 
 const router = Router();
 
-router.post("/api/userManagement/registerNoClient", async (req, res) => {
-    const userData = req.body;
-
+router.post("/api/userManagement/guest-session", async (req, res) => {
     try {
-        let result = await pool.query(
-            "SELECT * FROM nocliente WHERE rut = ($1)",
-            [userData.rut]
-        );
-        if (result.rowCount > 0) {
-            let update = await pool.query(
-                "UPDATE nocliente SET correo = ($1), numerotelefono = ($2) WHERE rut = ($3)",
-                [userData.correo, userData.telefono, userData.rut]
-            );
-            return res.status(200).json({message: "Datos actualizados correctamente"});
-        }
+        const { v4: uuidv4 } = await import("uuid");
+        const guestSessionId = uuidv4();
+        const {rut, correo, telefono} = req.body
 
-        result = await pool.query(
-            "INSERT INTO nocliente (rut, correo, numerotelefono) VALUES ($1,$2,$3)",
-            [userData.rut, userData.correo, userData.telefono]
-        );
+        const payload = {
+            sessionId: guestSessionId,
+            userType: "noCliente",
+            rut,
+            correo,
+            telefono
+        };
 
-        res.status(201).json({message: "No cliente registrado en la base de datos"})
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "2h",
+        });
+
+        res.cookie("guest_session", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 2 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({ user: payload });
     } catch (err) {
         res.status(500).json({
-            error: "Ocurrió un error interno en el servidor." });
+            error: "Ocurrio un error al crear la sesion de invitado",
+        });
     }
 });
 
@@ -80,7 +84,8 @@ router.post("/api/userManagement/register", async (req, res) => {
             message: "Usuario registrado satisfactoriamente",
         });
     } catch (err) {
-        return res.status(500).send("Error");
+        console.log(err);
+        return res.status(500).json({ error: "Ocurrio un error interno." });
     }
 });
 
@@ -116,17 +121,24 @@ router.post("/api/userManagement/login", async (req, res) => {
             mail: cliente.correo,
             name: cliente.nombre,
             lastName: cliente.apellido,
+            userType: "cliente",
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
             expiresIn: "1h",
         });
 
+        res.cookie("guest_session", "", {
+            httpOnly: true,
+            expires: new Date(0),
+        });
+        
         res.cookie("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // Solo enviar por HTTPS en producción
             maxAge: 3600000,
         });
+
 
         res.status(200).json({
             message: "Login exitoso",
@@ -141,50 +153,44 @@ router.post("/api/userManagement/login", async (req, res) => {
     }
 });
 
-router.post("/api/userManagement/authenticationNoClient", async (req, res) => {
-    const user = req.body;
+router.get("/api/userManagement/verify", (req, res) => {
+    const clientToken = req.cookies.token;
 
-    try {
-        const result = await pool.query(
-            "SELECT * FROM nocliente WHERE rut = ($1)",
-            [user.rut]
-        );
-
-        const noclient = result.rows[0];
-
-        const payload = {
-            rut: noclient.rut,
-            mail: noclient.correo
-        };
-
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
-
-        res.cookie("TemporalToken", token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Solo enviar por HTTPS en producción
-            maxAge: 3600000,
-        });
-
-        res.status(200).json({
-            message: "Temporal Token Ready",
-            user: payload,
-        });
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({
-            error: "Ocurrio un error inesperado.",
-        });
+    if (clientToken) {
+        try {
+            const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
+            return res.status(200).json({ ...decoded, userType: "cliente" });
+        } catch (err) {
+            console.error(
+                "Token de cliente inválido (se buscará token de invitado):",
+                err.message
+            );
+        }
     }
-});
 
-router.get("/api/userManagement/verify", verifyToken, (req, res) => {
-    res.status(200).json(req.user);
+    const guestToken = req.cookies.guest_session;
+
+    if (guestToken) {
+        try {
+            const decoded = jwt.verify(guestToken, process.env.JWT_SECRET);
+            return res.status(200).json({ ...decoded, userType: "noCliente" });
+        } catch (err) {
+            console.error("Token de invitado inválido:", err.message);
+            return res
+                .status(403)
+                .json({ error: "Token de invitado no válido." });
+        }
+    }
+
+    return res.status(401).json({ error: "No autorizado." });
 });
 
 router.post("/api/userManagement/logout", (req, res) => {
     res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.cookie("guest_session", "", {
         httpOnly: true,
         expires: new Date(0),
     });

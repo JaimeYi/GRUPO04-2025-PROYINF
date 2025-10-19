@@ -7,34 +7,19 @@ CREATE TABLE cliente (
 	numeroTelefono VARCHAR(12) NOT NULL
 );
 
-CREATE TABLE noCliente (
-	rut VARCHAR(12) PRIMARY KEY,
-	correo VARCHAR(100) NOT NULL,
-	numeroTelefono VARCHAR(12) NOT NULL
-);
-
-CREATE TABLE usuario (
-	rutCliente VARCHAR(12) UNIQUE,
-	rutNoCliente VARCHAR(12) UNIQUE,
-
-	PRIMARY KEY (rutCliente, rutNoCliente),
-
-	FOREIGN KEY (rutCliente)
-		REFERENCES cliente(rut)
-		ON DELETE CASCADE,
-	FOREIGN KEY (rutNoCliente)
-		REFERENCES noCliente(rut)
-		ON DELETE CASCADE
-);
-
 CREATE TABLE historialSimulacion (
 	IDsimulacion SERIAL PRIMARY KEY,
 	montoSimulado INT NOT NULL,
 	plazoCredito INT NOT NULL,
-	mesesDeGracia INT NOT NULL,
-	rutUsuario VARCHAR(12) NOT NULL,
 	seguroDeDegravamen BOOLEAN NOT NULL,
 	seguroDeCesantia BOOLEAN NOT NULL,
+	CTC INT NOT NULL,
+	cuotaMensual INT NOT NULL,
+	tasaInteres REAL NOT NULL,
+	CAE REAL NOT NULL,
+	costosSeguros INT NOT NULL,
+	rutUsuario VARCHAR(12),
+	guestID VARCHAR(255),
 
 	FOREIGN KEY (rutUsuario) 
 		REFERENCES cliente(rut)

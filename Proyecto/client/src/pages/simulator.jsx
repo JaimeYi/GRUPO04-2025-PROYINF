@@ -51,7 +51,7 @@ function CardData({ onClose }) {
 
             return false;
         } catch (err) {
-            console.log(err)
+            console.log(err);
             setError("RUT invalido, ingrese un RUT válido");
             return true;
         }
@@ -67,22 +67,25 @@ function CardData({ onClose }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData.rut)
+        console.log(formData.rut);
 
         // --- Verificar Rut ---
         if (await verifyRut(formData.rut)) {
             return;
         }
 
+        setError("");
+
         try {
             const response = await fetch(
-                "http://localhost:5000/api/userManagement/registerNoClient",
+                "http://localhost:5000/api/userManagement/guest-session",
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify(formData),
+                    credentials: "include",
                 }
             );
 
@@ -94,33 +97,8 @@ function CardData({ onClose }) {
                 );
             }
 
-            console.log("Respuesta del servidor:", result);
-
-            try {
-                const response = await fetch(
-                    "http://localhost:5000/api/userManagement/authenticationNoClient",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(formData),
-                        credentials: "include",
-                    }
-                );
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(
-                        result.error || "Ocurrió un error desconocido."
-                    );
-                }
-
-                setUser(result.user);
-            } catch (error) {
-                setError(error.message);
-            }
+            setUser(result.user);
+            onClose();
         } catch (error) {
             setError(error.message);
         }
@@ -180,6 +158,94 @@ function CardData({ onClose }) {
 function Simulator() {
     const { user, isLoading } = useAuth();
     const [isVisible, setIsVisible] = useState(false);
+    const [error, setError] = useState("");
+    const [historySimulation, setHistorySimulation] = useState([]);
+    const [creditData, setCreditData] = useState({
+        cuotaMensual: "",
+        ctc: "",
+        tasaInteres: "",
+        cae: "",
+        costoSeguros: "",
+    });
+
+    const [requestSimulation, setRequestSimulation] = useState({
+        userType: '',
+        userID: ''
+    })
+
+    const [formData, setFormData] = useState({
+        montoSimulacion: 100000,
+        plazoCredito: 0,
+        seguroDeDegravamen: true,
+        seguroDeCesantia: true,
+        userType: "",
+        userID: "",
+    });
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        let finalValue;
+        if (type === "checkbox") {
+            finalValue = checked;
+        } else if (type === "number" || type === "range") {
+            finalValue = value === "" ? "" : parseInt(value, 10);
+        } else {
+            finalValue = value;
+        }
+
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: finalValue,
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (formData.plazoCredito < 1) {
+            setError("Seleccione cantidad de cuotas");
+            return;
+        }
+
+        formData.userType = user.userType;
+        if (formData.userType === "noCliente") {
+            formData.userID = user.sessionId;
+        } else {
+            formData.userID = user.rut;
+        }
+
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/simulator/calculateCredit",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                    credentials: "include",
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || "Ocurrió un error desconocido."
+                );
+            }
+
+            setCreditData({
+                cuotaMensual: result.cuotaMensual,
+                ctc: result.ctc,
+                tasaInteres: result.tasaInteres,
+                cae: result.cae,
+                costoSeguros: result.costoSeguros,
+            });
+        } catch (error) {
+            setError("Datos invalidos.");
+        }
+    };
 
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
@@ -189,11 +255,165 @@ function Simulator() {
         return null;
     }
 
+    const getSimulationHistory = async () => {
+        requestSimulation.userType = user.userType;
+        if (requestSimulation.userType === "noCliente") {
+            requestSimulation.userID = user.sessionId;
+        } else {
+            requestSimulation.userID = user.rut;
+        }
+
+        const response = await fetch(
+            "http://localhost:5000/api/simulator/getSimulationHistory",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+                credentials: "include",
+            }
+        );
+
+        const result = await response.json();
+        console.log(result)
+
+        if (!response.ok) {
+            throw new Error(result.error || "Ocurrió un error desconocido.");
+        }
+
+        setHistorySimulation(result)
+    };
+
+    
+
     return (
         <div>
             <Navbar />
-            {user ? (
-                <>Holaaaa, estas listo</>
+            {!(user === null) ? (
+                <>
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="montoSimulacion">
+                                Monto a simular:
+                            </label>
+                            <input
+                                type="number"
+                                id="montoSimulacion"
+                                name="montoSimulacion"
+                                value={formData.montoSimulacion}
+                                onChange={handleChange}
+                                min={100000}
+                                max={99999999}
+                                maxLength={8}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="plazoCredito">
+                                Cantidad de cuotas:
+                                <strong> {formData.plazoCredito}</strong>
+                            </label>
+                            <div>
+                                <input
+                                    type="range"
+                                    id="plazoCredito"
+                                    name="plazoCredito"
+                                    value={formData.plazoCredito}
+                                    onChange={handleChange}
+                                    min="1"
+                                    max="64"
+                                    step="1"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label htmlFor="seguros">
+                                Seleccionar seguros que desee agregar:
+                            </label>
+                            <div>
+                                <label>
+                                    Seguro de Degravamen
+                                    <input
+                                        type="checkbox"
+                                        name="seguroDeDegravamen"
+                                        checked={formData.seguroDeDegravamen}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+                            <div>
+                                <label>
+                                    Seguro de Cesantia
+                                    <input
+                                        type="checkbox"
+                                        name="seguroDeCesantia"
+                                        checked={formData.seguroDeCesantia}
+                                        onChange={handleChange}
+                                    />
+                                </label>
+                            </div>
+                            <input
+                                type="text"
+                                name="userID"
+                                value={
+                                    user.userType === "noCliente"
+                                        ? user.sessionId
+                                        : user.rut
+                                }
+                                hidden
+                            />
+                        </div>
+                        <button type="submit">Simular</button>
+                    </form>
+                    {error && !(creditData.cuotaMensual >= 1) && (
+                        <p style={{ color: "red" }}>{error}</p>
+                    )}
+                    <hr />
+                    {creditData.cuotaMensual >= 1 && (
+                        <p style={{ color: "green" }}>
+                            Cuota mensual: ${creditData.cuotaMensual}
+                        </p>
+                    )}
+                    {creditData.cuotaMensual >= 1 && (
+                        <p style={{ color: "green" }}>
+                            Costo Total del Crédito (CTC): ${creditData.ctc}
+                        </p>
+                    )}
+                    {creditData.cuotaMensual >= 1 && (
+                        <p style={{ color: "green" }}>
+                            Tasa de interés: {creditData.tasaInteres}%
+                        </p>
+                    )}
+                    {creditData.cuotaMensual >= 1 && (
+                        <p style={{ color: "green" }}>
+                            Carga Anual Equivalente (CAE): {creditData.cae}%
+                        </p>
+                    )}
+                    {creditData.costoSeguros > 0 && (
+                        <p style={{ color: "green" }}>
+                            Total seguros: {creditData.costoSeguros}
+                        </p>
+                    )}
+                    <hr />
+                    <button onClick={getSimulationHistory}>
+                        Ver historial de simulaciones
+                    </button>
+                    {(historySimulation.length !== 0) ? 
+                    <>
+                        <h3>Mis ultimas 10 simulaciones</h3>
+                        <ul>
+                            {historySimulation.map(item => (
+                                <li key={item.idsimulacion}>
+                                    monto requerido: {item.montosimulado}, monto final: {item.ctc}, valor cuota: {item.cuotamensual}, cantidad de cuotas: {item.plazocredito}
+                                </li>
+                            ))}
+                        </ul>
+                    </> : <></>}
+                    <hr />
+                    <a href="/requestCredit">Solicitar crédito simulado</a>
+                </>
             ) : (
                 <>
                     <h3>Antes de comenzar</h3>
