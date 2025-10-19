@@ -4,7 +4,6 @@
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/) (v2.0+)
 - [Node.js](https://nodejs.org/) (opcional, solo para desarrollo local)
-
 ## Instalación del proyecto
 
 ### 1. Clonar el repositorio
@@ -21,8 +20,7 @@ git clone https://github.com/JaimeYi/GRUPO04-2025-PROYINF.git
 
 3. Felicidades! el backend del proyecto ya esta corriendo de manera correcta.
 
-si trabajan desde windows deben tener instalado WSL2 y tenerlo activado en docker desktop  
-esto se puede verificar en  
+Si se trabajará desde Windows se debe tener instalado WSL2 y tenerlo activado en Docker Desktop. Esto se puede verificar en:
 Configuración   
 -Resources  
   -Configure which WSL 2 distros you want to access Docker from. (esto debe estar activo)  
@@ -36,30 +34,16 @@ Configuración
 Abrir la terminal y navegar hasta el directorio GRUPO04-2025-PROYINF/Proyecto/server.
 
 ### 2. Levantar los contenedores
-Dado que se construyeron los contenedores en el paso de la instalación no es necesario utilizar el flag `--build`, por lo que el comando para levantar los contenedores quedaria `docker compose up`.
+Dado que se construyeron los contenedores en el paso de la instalación no es necesario utilizar el flag `--build`, por lo que el comando para levantar los contenedores quedaría `docker compose up`.
+
+Si se están levantando los contenedores por primera vez luego de realizar un `git pull` se recomienda encarecidamente ejecutar los siguientes comandos:
+
+`docker compose down -v` -> `docker compose up --build`
+
+Para de esta manera aplicar cualquier posible cambio que se haya realizado en la estructura de la base de datos o aplicar algún nuevo módulo que se haya incluido al proyecto.
 
 ### 3. Bajar contenedores
 Al terminar de trabajar con los contenedores se tienen dos opciones:
 
-1. Utilizar `Ctrl+C` para terminar la ejecución de Docker y que de esta manera se bajen los contenedores.
+1. Utilizar `Ctrl+C` en la terminal donde se haya ejecutado el comando `docker compose up` para terminar la ejecución de Docker y que de esta manera se bajen los contenedores.
 2. Bajar los contenedores directamente desde la aplicación Docker Desktop.
-
-# Comandos útiles 
-
-Pueden levantar el proyecto sin volver a construir las imágenes con el siguiente comando:
-  - docker compose up
-Si quieren levantar el proyecto en segundo plano pueden usar:
-  - docker compose up -d
-Para ver el estado de los servicios que están corriendo:
-  - docker compose ps
-Para ver los logs en tiempo real de todos los servicios:
-  - docker compose logs -f
-O de un servicio específico:
-  - docker compose logs -f nombre_servicio
-Para reiniciar un servicio específico:
-  - docker compose restart nombre_servicio
-Para detener todos los contenedores sin eliminar volúmenes:
-  - docker compose down
-
-
-

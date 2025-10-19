@@ -76,7 +76,7 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
     console.log("Insercion exitosa")
     
     tasaInteres = tasaInteres * 100;
-    cae = cae.toFixed(4)*100;
+    cae = cae.toFixed(4) * 100;
 
     res.status(200).json({
         cuotaMensual,

@@ -1,20 +1,10 @@
 # Ejecución React (Frontend)
+## Instalación
+Para esta sección del proyecto con haber ejecutado el comando `git clone` ya se tiene lista la instalación.
 
-## Available Scripts
+### Ejecución
+Para la ejecución de esta sección del proyecto se deberá abrir una terminal y se deberá situar en la ruta `./GRUPO04-2025-PROYINF/Proyecto/client`, una vez situado en este directorio se podrá ejecutar el siguiente comando.
 
-Situandose en el directorio `GRUPO04-2025-PROYINF/Proyecto/client` es posible ejecutar los siguientes comandos:
+#### `npm start`
 
-### `npm start`
-
-Ejecuta la aplicación en modo desarrollo. \
-Se debe ingresar en [http://localhost:3000](http://localhost:3000) en el navegador para observar el proyecto en el Browser.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Con este comando se inicia la aplicación **React**, al ejecutar este comando se levantará el `Frontend` del proyecto en la dirección [`http://localhost:3000`](http://localhost:3000).
