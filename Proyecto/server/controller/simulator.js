@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { rate } = require("financial");
 const pool = require("../db");
-
+const { verifyToken } = require("../middleware/verifyToken.js");
 const router = Router();
 
 router.post("/api/simulator/calculateCredit", async (req, res) => {
@@ -87,23 +87,24 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
     });
 });
 
-router.post("/api/simulator/getSimulationHistory", async (req, res) => {
-    creditData = req.body;
+router.get("/api/simulator/simulationHistory", verifyToken, async (req, res) => {
+    const userType = req.user.userType;
+    const userID = req.user.sessionId;
 
     try {
-        if (creditData.userType === "noCliente") {
+        if (userType === "noCliente") {
             const result = await pool.query(
                 "SELECT * FROM historialsimulacion WHERE guestID = $1 ORDER BY idsimulacion DESC LIMIT 10",
                 [
-                    creditData.userID
+                    userID
                 ]
             );
             res.status(200).json(result.rows)
-        } else if (creditData.userType === 'cliente'){
+        } else if (userType === 'cliente'){
             const result = await pool.query(
                 "SELECT * FROM historialsimulacion WHERE rutUsuario = $1  ORDER BY idsimulacion DESC LIMIT 10",
                 [
-                    creditData.userID
+                    userID
                 ]
             );
             res.status(200).json(result.rows)

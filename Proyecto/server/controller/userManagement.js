@@ -2,8 +2,6 @@ const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const pool = require("../db");
 const jwt = require("jsonwebtoken");
-const verifyToken = require("../middleware/verifyToken");
-
 const router = Router();
 
 router.post("/api/userManagement/guest-session", async (req, res) => {
@@ -21,13 +19,13 @@ router.post("/api/userManagement/guest-session", async (req, res) => {
         };
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "2h",
+            expiresIn: "1h",
         });
 
         res.cookie("guest_session", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 2 * 60 * 60 * 1000,
+            maxAge: 60 * 60 * 1000,
         });
 
         res.status(200).json({ user: payload });
@@ -117,6 +115,7 @@ router.post("/api/userManagement/login", async (req, res) => {
         }
 
         const payload = {
+            sessionId: cliente.rut,
             rut: cliente.rut,
             mail: cliente.correo,
             name: cliente.nombre,
@@ -153,6 +152,20 @@ router.post("/api/userManagement/login", async (req, res) => {
     }
 });
 
+router.post("/api/userManagement/logout", (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.cookie("guest_session", "", {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({
+        message: "Sesión cerrada correctamente.",
+    });
+});
+
 router.get("/api/userManagement/verify", (req, res) => {
     const clientToken = req.cookies.token;
 
@@ -183,20 +196,6 @@ router.get("/api/userManagement/verify", (req, res) => {
     }
 
     return res.status(401).json({ error: "No autorizado." });
-});
-
-router.post("/api/userManagement/logout", (req, res) => {
-    res.cookie("token", "", {
-        httpOnly: true,
-        expires: new Date(0),
-    });
-    res.cookie("guest_session", "", {
-        httpOnly: true,
-        expires: new Date(0),
-    });
-    res.status(200).json({
-        message: "Sesión cerrada correctamente.",
-    });
 });
 
 module.exports = router;

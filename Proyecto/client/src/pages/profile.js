@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../components/auth";
 import Navbar from "../components/Navbar";
+import "../css/profile.css"
 
 function Profile(){
     const { user } = useAuth();
@@ -14,6 +15,11 @@ function Profile(){
         <div>
             <Navbar />
             <h1>Profile</h1>
+            <div className="backgroundGlass">
+                <div className="glassCard">
+
+                </div>
+            </div>
         </div>
     )
 }

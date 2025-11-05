@@ -1,6 +1,6 @@
 import Navbar from "../components/Navbar";
 import { useAuth } from "../components/auth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/cardData.css";
 
 function CardData({ onClose }) {
@@ -168,11 +168,6 @@ function Simulator() {
         costoSeguros: "",
     });
 
-    const [requestSimulation, setRequestSimulation] = useState({
-        userType: '',
-        userID: ''
-    })
-
     const [formData, setFormData] = useState({
         montoSimulacion: 100000,
         plazoCredito: 0,
@@ -197,6 +192,25 @@ function Simulator() {
             ...prevState,
             [name]: finalValue,
         }));
+    };
+
+    const getSimulationHistory = async () => {
+        const response = await fetch(
+            "http://localhost:5000/api/simulator/simulationHistory",
+            {
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        const result = await response.json();
+        console.log(result);
+
+        if (!response.ok) {
+            throw new Error(result.error || "Ocurrió un error desconocido.");
+        }
+
+        setHistorySimulation(result);
     };
 
     const handleSubmit = async (e) => {
@@ -242,7 +256,10 @@ function Simulator() {
                 cae: result.cae,
                 costoSeguros: result.costoSeguros,
             });
+
+            getSimulationHistory();
         } catch (error) {
+            console.log(error);
             setError("Datos invalidos.");
         }
     };
@@ -251,41 +268,13 @@ function Simulator() {
         setIsVisible(!isVisible);
     };
 
+    useEffect(() => {
+        getSimulationHistory();
+    }, []);
+
     if (isLoading) {
         return null;
     }
-
-    const getSimulationHistory = async () => {
-        requestSimulation.userType = user.userType;
-        if (requestSimulation.userType === "noCliente") {
-            requestSimulation.userID = user.sessionId;
-        } else {
-            requestSimulation.userID = user.rut;
-        }
-
-        const response = await fetch(
-            "http://localhost:5000/api/simulator/getSimulationHistory",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-                credentials: "include",
-            }
-        );
-
-        const result = await response.json();
-        console.log(result)
-
-        if (!response.ok) {
-            throw new Error(result.error || "Ocurrió un error desconocido.");
-        }
-
-        setHistorySimulation(result)
-    };
-
-    
 
     return (
         <div>
@@ -397,20 +386,23 @@ function Simulator() {
                         </p>
                     )}
                     <hr />
-                    <button onClick={getSimulationHistory}>
-                        Ver historial de simulaciones
-                    </button>
-                    {(historySimulation.length !== 0) ? 
-                    <>
-                        <h3>Mis ultimas 10 simulaciones</h3>
-                        <ul>
-                            {historySimulation.map(item => (
-                                <li key={item.idsimulacion}>
-                                    monto requerido: {item.montosimulado}, monto final: {item.ctc}, valor cuota: {item.cuotamensual}, cantidad de cuotas: {item.plazocredito}
-                                </li>
-                            ))}
-                        </ul>
-                    </> : <></>}
+                    {historySimulation.length !== 0 ? (
+                        <>
+                            <h3>Mis ultimas 10 simulaciones</h3>
+                            <ul>
+                                {historySimulation.map((item) => (
+                                    <li key={item.idsimulacion}>
+                                        monto requerido: {item.montosimulado},
+                                        monto final: {item.ctc}, valor cuota:{" "}
+                                        {item.cuotamensual}, cantidad de cuotas:{" "}
+                                        {item.plazocredito}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    ) : (
+                        <></>
+                    )}
                     <hr />
                     <a href="/requestCredit">Solicitar crédito simulado</a>
                 </>
