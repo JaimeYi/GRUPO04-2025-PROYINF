@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { rutVerifier } from "../utils/rutVerifier";
 
 function Register() {
     const navigate = useNavigate();
@@ -16,48 +17,6 @@ function Register() {
 
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-
-    const verifyRut = (rut) => {
-        const dv = rut.slice(-1);
-        const body = rut.slice(0, -2);
-
-        try {
-            let aux = 2;
-            let sum = 0;
-            for (let i = body.length - 1; i >= 0; i--) {
-                sum += parseInt(body[i]) * aux;
-
-                if (aux === 7) {
-                    aux = 2;
-                } else {
-                    aux++;
-                }
-            }
-
-            aux = sum % 11;
-            aux = 11- aux;
-
-            switch (aux) {
-                case 10:
-                    aux = "K";
-                    break;
-                case 11:
-                    aux = "0";
-                    break;
-                default:
-                    aux = aux.toString();
-            }
-
-            if (aux !== dv) {
-                throw Error("dv no coincide");
-            }
-
-            return false
-        } catch (err) {
-            setError("RUT invalido, ingrese un RUT válido");
-            return true
-        }
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -76,7 +35,8 @@ function Register() {
         }
 
         // --- Verificar Rut ---
-        if (await verifyRut(formData.rut)){
+        if (await rutVerifier(formData.rut)){
+            setError("El rut ingresado es inválido");
             return;
         }
 
