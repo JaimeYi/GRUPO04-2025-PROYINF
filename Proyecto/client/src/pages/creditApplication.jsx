@@ -6,6 +6,7 @@ import "../css/creditApplication.css";
 
 function CreditApplication(){
     const { user, isLoading } = useAuth();
+<<<<<<< HEAD
     const [isMessageVisible, setIsMessageVisible] = useState(true);
 
     useEffect(() => {
@@ -22,21 +23,30 @@ function CreditApplication(){
         };
         
     }, []);
+=======
+>>>>>>> 9007e269b6470398005351a20f303dadcdb48cdf
 
     if (isLoading) {
         return null;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9007e269b6470398005351a20f303dadcdb48cdf
     return (
         <div>
             {!(user === null || user.userType === "noCliente") ? (
                 <>
                     <Navbar />
+<<<<<<< HEAD
                     {isMessageVisible && (
                         <p id="verifyCreditText">
                             Verificando requisitos para el préstamo...
                         </p>
                     )}
+=======
+                    
+>>>>>>> 9007e269b6470398005351a20f303dadcdb48cdf
                 </>
             ) : (
                 <>

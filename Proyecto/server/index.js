@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
     res.send("<h1>Home página créditos de consumo</h1>");
 });
 
+
 app.listen(port, () => {
     console.log(`App corriendo en http://localhost:${port}`);
 });

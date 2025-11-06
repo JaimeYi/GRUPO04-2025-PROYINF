@@ -41,7 +41,6 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
         0.01
     );
     let cae = (1 + tasaMensualReal) ** 12 - 1;
-
     try {
         if (creditData.userType === "noCliente") {
             const result = await pool.query(
