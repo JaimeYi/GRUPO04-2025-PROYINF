@@ -1,0 +1,4 @@
+## Funcionamiento del proyecto
+Por el Stack de tecnologías definido para este proyecto su ejecución se separa en dos servicios. Uno de estos servicios será el `Frontend` el cual se realiza con el **Framework React**, mientras que el otro servicio será el `Backend` el cual se realiza con el **Framework Express**. Como se puede notar, para ambos servicios se utilizan Frameworks de `JavaScript` por lo que para poder ejecutar este proyecto será necesario contar de antemano con el runtime environment **Node.js**.
+
+Dentro de la carpeta `client` se encuentra todo lo relacionado con **React**, mientras que en la carpeta `server` se encuentra todo lo relacionado con **Express**. Para obtener mayor detalle sobre como levantar cada uno de estos servicios, ingresar en la carpeta que corresponda.

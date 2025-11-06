@@ -1,0 +1,18 @@
+.alertAndRedirect {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.alert-signal{
+    color: white;
+    width: 30px;
+    height: 30px;
+}
+
+.alertText {
+    max-width: 35vh;
+    text-align: center;
+}

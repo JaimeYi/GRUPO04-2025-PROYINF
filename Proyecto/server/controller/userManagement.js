@@ -1,0 +1,203 @@
+const { Router } = require("express");
+const bcrypt = require("bcrypt");
+const pool = require("../db");
+const jwt = require("jsonwebtoken");
+const router = Router();
+
+router.post("/api/userManagement/guest-session", async (req, res) => {
+    try {
+        const { v4: uuidv4 } = await import("uuid");
+        const guestSessionId = uuidv4();
+        const {rut, correo, telefono} = req.body
+
+        const payload = {
+            sessionId: guestSessionId,
+            userType: "noCliente",
+            rut,
+            correo,
+            telefono
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+
+        res.cookie("guest_session", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 1000,
+        });
+
+        res.status(200).json({ user: payload });
+    } catch (err) {
+        res.status(500).json({
+            error: "Ocurrio un error al crear la sesion de invitado",
+        });
+    }
+});
+
+router.post("/api/userManagement/register", async (req, res) => {
+    const userData = req.body;
+
+    try {
+        let result = await pool.query(
+            "SELECT rut FROM cliente WHERE rut = ($1)",
+            [userData.rut]
+        );
+        if (result.rowCount > 0) {
+            return res.status(409).json({
+                error: "Este RUT ya se ha registrado anteriormente.",
+            });
+        }
+
+        result = await pool.query(
+            "SELECT correo FROM cliente WHERE correo = ($1)",
+            [userData.correo]
+        );
+        if (result.rowCount > 0) {
+            return res.status(409).json({
+                error: "Este correo electrónico ya se ha registrado anteriormente.",
+            });
+        }
+
+        // --- Hashear contraseña ---
+        const saltRound = 10;
+        const hashedPassword = await bcrypt.hash(
+            userData.contrasena,
+            saltRound
+        );
+
+        const newUser = await pool.query(
+            "INSERT INTO cliente(rut,nombreCompleto,correo,contraseña,numerotelefono,ocupacion,ingresoLiquido,direccion) VALUES (($1),($2),($3),($4),($5),($6),($7),($8))",
+            [
+                userData.rut,
+                userData.nombre,
+                userData.correo,
+                hashedPassword,
+                userData.telefono,
+                userData.ocupacion,
+                userData.ingresoLiquido,
+                userData.direccion
+            ]
+        );
+        res.status(201).json({
+            message: "Usuario registrado satisfactoriamente",
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: "Ocurrio un error interno." });
+    }
+});
+
+router.post("/api/userManagement/login", async (req, res) => {
+    const { rut, contrasena } = req.body;
+
+    try {
+        const result = await pool.query(
+            "SELECT * FROM cliente WHERE rut = ($1)",
+            [rut]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(401).json({
+                error: "Credenciales incorrectas.",
+            });
+        }
+
+        const cliente = result.rows[0];
+        const hashedPassword = cliente.contraseña;
+        const name = cliente.nombre;
+
+        const matchPassword = await bcrypt.compare(contrasena, hashedPassword);
+
+        if (!matchPassword) {
+            return res.status(401).json({
+                error: "Credenciales incorrectas.",
+            });
+        }
+
+        const payload = {
+            sessionId: cliente.rut,
+            rut: cliente.rut,
+            mail: cliente.correo,
+            name: cliente.nombre,
+            lastName: cliente.apellido,
+            userType: "cliente",
+        };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+
+        res.cookie("guest_session", "", {
+            httpOnly: true,
+            expires: new Date(0),
+        });
+        
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production", // Solo enviar por HTTPS en producción
+            maxAge: 3600000,
+        });
+
+
+        res.status(200).json({
+            message: "Login exitoso",
+            name,
+            user: payload,
+        });
+    } catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            error: "Ocurrio un error inesperado.",
+        });
+    }
+});
+
+router.post("/api/userManagement/logout", (req, res) => {
+    res.cookie("token", "", {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.cookie("guest_session", "", {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({
+        message: "Sesión cerrada correctamente.",
+    });
+});
+
+router.get("/api/userManagement/verify", (req, res) => {
+    const clientToken = req.cookies.token;
+
+    if (clientToken) {
+        try {
+            const decoded = jwt.verify(clientToken, process.env.JWT_SECRET);
+            return res.status(200).json({ ...decoded, userType: "cliente" });
+        } catch (err) {
+            console.error(
+                "Token de cliente inválido (se buscará token de invitado):",
+                err.message
+            );
+        }
+    }
+
+    const guestToken = req.cookies.guest_session;
+
+    if (guestToken) {
+        try {
+            const decoded = jwt.verify(guestToken, process.env.JWT_SECRET);
+            return res.status(200).json({ ...decoded, userType: "noCliente" });
+        } catch (err) {
+            console.error("Token de invitado inválido:", err.message);
+            return res
+                .status(403)
+                .json({ error: "Token de invitado no válido." });
+        }
+    }
+
+    return res.status(401).json({ error: "No autorizado." });
+});
+
+module.exports = router;

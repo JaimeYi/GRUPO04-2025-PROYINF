@@ -1,0 +1,50 @@
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: rgb(39, 71, 255);
+    width: auto;
+    box-shadow: 0 0 2px 0 #000000;
+}
+
+.navbar img{
+    width: 50px;
+    padding: 5px;
+}
+
+.navbar ul {
+    margin: 0;
+}
+
+.navbar li {
+    padding: 20px;
+    text-decoration: none;
+    list-style-type: none;
+}
+
+.navbar .listButtons a {
+    background-color: rgb(252, 199, 28);
+    color: #242424;
+    border-radius: 30px;
+    margin: 5px;
+    padding: 15px;
+    text-decoration: none;
+    text-shadow: none;
+}
+
+.navbar .listButtons a:hover{
+    background-color: rgb(201, 159, 23);
+}
+
+.navbar .listButtons a:active{
+    background-color: rgb(155, 123, 18);
+}
+
+a:visited {
+    color: #242424;
+}
+
+.listButtons {
+    display: flex;
+    justify-content: space-between;
+}

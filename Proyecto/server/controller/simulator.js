@@ -7,13 +7,21 @@ const router = Router();
 router.post("/api/simulator/calculateCredit", async (req, res) => {
     creditData = req.body;
 
+    // --- Definicion de variables ---
     const gastosExtras = 3000;
-    const costoSeguros =
-        (creditData.seguroDeCesantia + creditData.seguroDeDegravamen) * 3000; // consultar con cliente como definir los costos de los seguros asociados al credito
-    const principalTotalFinanciado =
-        creditData.montoSimulacion + gastosExtras + costoSeguros;
+    const costoPorSeguro = 3000;
     let tasaInteres = 0.0219; // valor temporal para la tasa de interes, consultar con cliente monto real
     const numeroDePeriodos = creditData.plazoCredito;
+
+    
+
+    // --- Realizacion de calculos ---
+    const costoSeguros =
+        (creditData.seguroDeCesantia + creditData.seguroDeDegravamen) *
+        costoPorSeguro; // consultar con cliente como definir los costos de los seguros asociados al credito
+
+    const principalTotalFinanciado =
+        creditData.montoSimulacion + gastosExtras + costoSeguros;
 
     const cuotaMensual = Math.round(
         (principalTotalFinanciado *
@@ -24,7 +32,6 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
 
     const ctc = cuotaMensual * numeroDePeriodos;
 
-    // Calculos no oficiales, consultar con el cliente
     const tasaMensualReal = rate(
         numeroDePeriodos,
         -1 * cuotaMensual,
@@ -34,7 +41,6 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
         0.01
     );
     let cae = (1 + tasaMensualReal) ** 12 - 1;
-    
     try {
         if (creditData.userType === "noCliente") {
             const result = await pool.query(
@@ -52,7 +58,7 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
                     creditData.userID,
                 ]
             );
-        } else if (creditData.userType === 'cliente'){
+        } else if (creditData.userType === "cliente") {
             const result = await pool.query(
                 "INSERT INTO historialSimulacion (montoSimulado, plazoCredito, seguroDeDegravamen, seguroDeCesantia, CTC, cuotaMensual, tasaInteres, CAE, costosSeguros, rutUsuario) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
                 [
@@ -73,8 +79,8 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
         console.log(err);
     }
 
-    console.log("Insercion exitosa")
-    
+    console.log("Simulacion almacenada correctamente");
+
     tasaInteres = tasaInteres * 100;
     cae = cae.toFixed(4) * 100;
 
@@ -87,31 +93,31 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
     });
 });
 
-router.get("/api/simulator/simulationHistory", verifyToken, async (req, res) => {
-    const userType = req.user.userType;
-    const userID = req.user.sessionId;
+router.get(
+    "/api/simulator/simulationHistory",
+    verifyToken,
+    async (req, res) => {
+        const userType = req.user.userType;
+        const userID = req.user.sessionId;
 
-    try {
-        if (userType === "noCliente") {
-            const result = await pool.query(
-                "SELECT * FROM historialsimulacion WHERE guestID = $1 ORDER BY idsimulacion DESC LIMIT 10",
-                [
-                    userID
-                ]
-            );
-            res.status(200).json(result.rows)
-        } else if (userType === 'cliente'){
-            const result = await pool.query(
-                "SELECT * FROM historialsimulacion WHERE rutUsuario = $1  ORDER BY idsimulacion DESC LIMIT 10",
-                [
-                    userID
-                ]
-            );
-            res.status(200).json(result.rows)
+        try {
+            if (userType === "noCliente") {
+                const result = await pool.query(
+                    "SELECT * FROM historialsimulacion WHERE guestID = $1 ORDER BY idsimulacion DESC LIMIT 10",
+                    [userID]
+                );
+                res.status(200).json(result.rows);
+            } else if (userType === "cliente") {
+                const result = await pool.query(
+                    "SELECT * FROM historialsimulacion WHERE rutUsuario = $1  ORDER BY idsimulacion DESC LIMIT 10",
+                    [userID]
+                );
+                res.status(200).json(result.rows);
+            }
+        } catch (err) {
+            console.log(err);
         }
-    } catch (err) {
-        console.log(err);
     }
-});
+);
 
 module.exports = router;

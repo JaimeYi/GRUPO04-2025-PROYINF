@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import { Routes, Route } from "react-router-dom"; // 👈 Importar
+import Home from "./pages/home"; // Suponiendo que tienes componentes para cada página
+import Login from "./pages/login";
+import Register from "./pages/register";
+import Profile from "./pages/profile";
+import Simulator from "./pages/simulator";
+import CreditApplication from "./pages/creditApplication"
+// import ProfilePage from './pages/ProfilePage';
+// import NotFoundPage from './pages/NotFoundPage';
+import "./css/index.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div>
+            {/* Aquí se define qué componente renderizar para cada ruta */}
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/simulator" element={<Simulator />} />
+                <Route path="/creditApplication" element={<CreditApplication />}/>
+        {/* <Route path="*" element={<NotFoundPage />} /> Ruta para 404 */}
+            </Routes>
+        </div>
+    );
 }
 
 export default App;

@@ -14,3 +14,7 @@ Puede acceder a la Wiki mediante el siguiente [enlace](https://github.com/JaimeY
 
 ### Levantamiento del proyecto
 Para obtener más información sobre como levantar el proyecto de manera local por favor dirigirse a la carpeta `Proyecto`
+
+### Prototipo del proyecto
+Con el objetivo de realizar un primer acercamiento con el producto final que se desarollará se creo el siguiente prototipo.\
+[Video explicativo del prototipo](https://drive.google.com/file/d/1roARHS0A0fR0vwQd785LMScExT9H5qQE/view)
