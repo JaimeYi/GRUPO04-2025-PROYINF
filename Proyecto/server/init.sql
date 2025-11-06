@@ -1,10 +1,12 @@
 CREATE TABLE cliente (
 	rut VARCHAR(12) PRIMARY KEY,
-	nombre VARCHAR(255) NOT NULL,
-	apellido VARCHAR(255) NOT NULL,
+	nombreCompleto VARCHAR(255) NOT NULL,
 	correo VARCHAR(255) NOT NULL,
 	contraseña VARCHAR(60) NOT NULL,
-	numeroTelefono VARCHAR(12) NOT NULL
+	numeroTelefono VARCHAR(12) NOT NULL,
+	ocupacion VARCHAR(100) NOT NULL,
+	ingresoLiquido INT NOT NULL,
+	direccion VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE historialSimulacion (

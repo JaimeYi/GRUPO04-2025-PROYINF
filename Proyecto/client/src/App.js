@@ -5,6 +5,7 @@ import Login from "./pages/login";
 import Register from "./pages/register";
 import Profile from "./pages/profile";
 import Simulator from "./pages/simulator";
+import CreditApplication from "./pages/creditApplication"
 // import ProfilePage from './pages/ProfilePage';
 // import NotFoundPage from './pages/NotFoundPage';
 import "./css/index.css";
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/simulator" element={<Simulator />} />
+                <Route path="/creditApplication" element={<CreditApplication />}/>
         {/* <Route path="*" element={<NotFoundPage />} /> Ruta para 404 */}
             </Routes>
         </div>

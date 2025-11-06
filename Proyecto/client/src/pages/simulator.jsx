@@ -363,7 +363,7 @@ function Simulator() {
                         <></>
                     )}
                     <hr />
-                    <a href="/requestCredit">Solicitar crédito simulado</a>
+                    <a href="/creditApplication">Solicitar crédito simulado</a>
                 </>
             ) : (
                 <>

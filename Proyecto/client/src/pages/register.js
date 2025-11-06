@@ -9,10 +9,12 @@ function Register() {
     const [formData, setFormData] = useState({
         rut: "",
         nombre: "",
-        apellido: "",
         correo: "",
         telefono: "",
         contrasena: "",
+        ocupacion: "",
+        ingresoLiquido: "",
+        direccion: ""
     });
 
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,23 +89,12 @@ function Register() {
                     />
                 </div>
                 <div>
-                    <label htmlFor="nombre">Nombre:</label>
+                    <label htmlFor="nombreCompleto">Nombre completo:</label>
                     <input
                         type="text"
                         id="nombre"
                         name="nombre"
                         value={formData.nombre}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="apellido">Apellido:</label>
-                    <input
-                        type="text"
-                        id="apellido"
-                        name="apellido"
-                        value={formData.apellido}
                         onChange={handleChange}
                         required
                     />
@@ -149,6 +140,39 @@ function Register() {
                         name="confirmarContrasena"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="ocupacion">ocupación:</label>
+                    <input
+                        type="text"
+                        id="ocupacion"
+                        name="ocupacion"
+                        value={formData.ocupacion}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="ingresoLiquido">ingreso liquido:</label>
+                    <input
+                        type="number"
+                        id="ingresoLiquido"
+                        name="ingresoLiquido"
+                        value={formData.ingresoLiquido}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label htmlFor="direccion">dirección:</label>
+                    <input
+                        type="text"
+                        id="direccion"
+                        name="direccion"
+                        value={formData.direccion}
+                        onChange={handleChange}
                         required
                     />
                 </div>

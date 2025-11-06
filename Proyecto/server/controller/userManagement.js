@@ -68,14 +68,16 @@ router.post("/api/userManagement/register", async (req, res) => {
         );
 
         const newUser = await pool.query(
-            "INSERT INTO cliente(rut,nombre,apellido,correo,contraseña,numerotelefono) VALUES (($1),($2),($3),($4),($5),($6))",
+            "INSERT INTO cliente(rut,nombreCompleto,correo,contraseña,numerotelefono,ocupacion,ingresoLiquido,direccion) VALUES (($1),($2),($3),($4),($5),($6),($7),($8))",
             [
                 userData.rut,
                 userData.nombre,
-                userData.apellido,
                 userData.correo,
                 hashedPassword,
                 userData.telefono,
+                userData.ocupacion,
+                userData.ingresoLiquido,
+                userData.direccion
             ]
         );
         res.status(201).json({
