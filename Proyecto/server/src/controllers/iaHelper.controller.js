@@ -1,7 +1,7 @@
 const {iaCall} = require("../services/iaHelper.service")
 
 getSalaryPDF = (async (req, res) => {
-    const prompt = "Eres un experto analizador de contratos laborales, en esta ocasion se te proporcionaran liquidaciones de sueldo. debes analizar las liquidaciones de sueldo y retornar unicamente el sueldo que se describe en el documento. en caso de no tener un monto valido, retorna -1.";
+    const prompt = "Eres un experto analizador de contratos laborales, en esta ocasion se te proporcionaran liquidaciones de sueldo. debes analizar las liquidaciones de sueldo y retornar unicamente el sueldo que se describe en el documento sin puntos ni comas. En caso de no tener un monto valido, retorna -1. Debes considerar el sueldo como el sueldo liquido, no el sueldo bruto. Cada vez que lo analices debes asegurarte de que el sueldo liquido que seleccionas es el correcto.";
     if (!req.file) {
         return res.status(400).json({ error: "Falta el archivo PDF." });
     }
