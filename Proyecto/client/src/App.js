@@ -1,5 +1,5 @@
 // src/App.js
-import { Routes, Route } from "react-router-dom"; // 👈 Importar
+import { Routes, Route } from "react-router-dom"; //Importar
 import Home from "./pages/home"; // Suponiendo que tienes componentes para cada página
 import Login from "./pages/login";
 import Register from "./pages/register";
@@ -9,6 +9,7 @@ import CreditApplication from "./pages/creditApplication"
 // import ProfilePage from './pages/ProfilePage';
 // import NotFoundPage from './pages/NotFoundPage';
 import "./css/index.css";
+import BottomBar from "./components/BottomBar";
 
 function App() {
     return (
@@ -23,6 +24,8 @@ function App() {
                 <Route path="/creditApplication" element={<CreditApplication />}/>
         {/* <Route path="*" element={<NotFoundPage />} /> Ruta para 404 */}
             </Routes>
+            {/* Barra fija inferior visible en todas las páginas */}
+            <BottomBar />
         </div>
     );
 }

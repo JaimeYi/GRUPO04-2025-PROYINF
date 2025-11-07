@@ -1,0 +1,42 @@
+.bottombar{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #4577E970;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1000;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+}
+
+.bottombar-inner{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.bottombar-btn{
+    display: inline-block;
+    padding: 1px 14px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.12s ease, filter 0.12s ease, opacity 0.12s ease;
+    color: #ffffff;
+}
+
+.bottombar-btn:hover{
+    transform: translateY(-2px);
+    filter: brightness(0.98);
+    opacity: 0.98;
+}
+
+/* Responsive: ocultar botones en pantallas muy pequeñas o convertir en iconos si lo prefieres */
+@media (max-width: 420px){
+    .bottombar{ padding: 8px; }
+    .bottombar-btn{ padding: 8px 10px; font-size: 14px; }
+}
