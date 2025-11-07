@@ -1,0 +1,88 @@
+.home-page{
+	min-height: calc(75vh - 140px); /* dejar espacio para navbar y barra inferior */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+}
+
+.hero-card{
+	width: 100%;
+	max-width: 720px;
+	background: rgba(209, 238, 252, 0.199);
+	backdrop-filter: blur(7px);
+	-webkit-backdrop-filter: blur(4px);
+	border-radius: 14px;
+	padding: 32px;
+	box-shadow: 0 8px 30px rgba(8,20,30,0.12);
+	text-align: center;
+}
+
+.hero-card h2{
+	margin: 0 0 12px 0;
+	font-size: 1.9rem;
+	color: #ffffff;
+}
+
+.hero-card p{
+	margin: 0 0 18px 0;
+	color: #ffffff;
+	font-size: 1rem;
+}
+
+.hero-btn{
+	display: inline-block;
+	padding: 12px 20px;
+	border-radius: 28px;
+	text-decoration: none;
+	font-weight: 700;
+	color: #052633;
+	background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
+	box-shadow: 0 6px 18px rgba(8,20,30,0.12);
+	transition: transform 0.12s ease, filter 0.12s ease;
+}
+
+.hero-btn:hover{
+	transform: translateY(-3px);
+	filter: brightness(0.98);
+}
+
+@media (max-width: 520px){
+	.hero-card{ padding: 20px; }
+	.hero-card h2{ font-size: 1.4rem; }
+}
+
+/* Estilos para formularios dentro de la tarjeta (login / register) */
+.card-form{
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 12px;
+}
+
+.card-form label{
+	text-align: left;
+	font-weight: 600;
+	color: rgba(11,43,58,0.9);
+}
+
+.card-form input, .card-form textarea, .card-form select{
+	width: 100%;
+	padding: 10px 12px;
+	border-radius: 8px;
+	border: 1px solid rgba(11,43,58,0.12);
+	background: rgba(255,255,255,0.96);
+	box-sizing: border-box;
+}
+
+.card-form input:focus{
+	outline: none;
+	box-shadow: 0 4px 12px rgba(56,171,228,0.12);
+	border-color: rgba(56,171,228,0.6);
+}
+
+.card-form .hero-btn{
+	align-self: center;
+	min-width: 200px;
+}
+

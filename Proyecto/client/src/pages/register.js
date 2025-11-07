@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import "../css/home.css";
 import { rutVerifier } from "../utils/rutVerifier";
 
 function Register() {
@@ -73,114 +74,110 @@ function Register() {
     return (
         <div>
             <Navbar />
-            <form onSubmit={handleSubmit}>
-                <h2>Formulario de Registro</h2>
-                <div>
-                    <label htmlFor="rut">Rut:</label>
-                    <input
-                        type="text"
-                        id="rut"
-                        name="rut"
-                        value={formData.rut}
-                        onChange={handleChange}
-                        maxLength={10}
-                        placeholder="12345678-K"
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="nombreCompleto">Nombre completo:</label>
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="correo">Correo Electrónico:</label>
-                    <input
-                        type="email"
-                        id="correo"
-                        name="correo"
-                        value={formData.correo}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="telefono">Número de teléfono:</label>
-                    <input
-                        type="text"
-                        id="telefono"
-                        name="telefono"
-                        value={formData.telefono}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="contrasena">Contraseña:</label>
-                    <input
-                        type="password"
-                        id="contrasena"
-                        name="contrasena"
-                        value={formData.contrasena}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="contrasena">Repetir contraseña:</label>
-                    <input
-                        type="password"
-                        id="confirmarContrasena"
-                        name="confirmarContrasena"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="ocupacion">ocupación:</label>
-                    <input
-                        type="text"
-                        id="ocupacion"
-                        name="ocupacion"
-                        value={formData.ocupacion}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="ingresoLiquido">ingreso liquido:</label>
-                    <input
-                        type="number"
-                        id="ingresoLiquido"
-                        name="ingresoLiquido"
-                        value={formData.ingresoLiquido}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="direccion">dirección:</label>
-                    <input
-                        type="text"
-                        id="direccion"
-                        name="direccion"
-                        value={formData.direccion}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
 
-                {error && <p style={{ color: "red" }}>{error}</p>}
+            <main className="home-page">
+                <div className="hero-card">
+                    <h2>Registrarse</h2>
+                    <p>Crea tu cuenta para acceder a las simulaciones y obtener recomendaciones personalizadas.</p>
+                    <form onSubmit={handleSubmit} className="card-form">
+                        <label htmlFor="rut">Rut</label>
+                        <input
+                            type="text"
+                            id="rut"
+                            name="rut"
+                            value={formData.rut}
+                            onChange={handleChange}
+                            maxLength={10}
+                            placeholder="12345678-K"
+                            required
+                        />
 
-                <button type="submit">Registrarse</button>
-            </form>
+                        <label htmlFor="nombre">Nombre completo</label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            value={formData.nombre}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="correo">Correo electrónico</label>
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            value={formData.correo}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="telefono">Teléfono</label>
+                        <input
+                            type="text"
+                            id="telefono"
+                            name="telefono"
+                            value={formData.telefono}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="contrasena">Contraseña</label>
+                        <input
+                            type="password"
+                            id="contrasena"
+                            name="contrasena"
+                            value={formData.contrasena}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="confirmarContrasena">Repetir contraseña</label>
+                        <input
+                            type="password"
+                            id="confirmarContrasena"
+                            name="confirmarContrasena"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+
+                        <label htmlFor="ocupacion">Ocupación</label>
+                        <input
+                            type="text"
+                            id="ocupacion"
+                            name="ocupacion"
+                            value={formData.ocupacion}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="ingresoLiquido">Ingreso líquido</label>
+                        <input
+                            type="number"
+                            id="ingresoLiquido"
+                            name="ingresoLiquido"
+                            value={formData.ingresoLiquido}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <label htmlFor="direccion">Dirección</label>
+                        <input
+                            type="text"
+                            id="direccion"
+                            name="direccion"
+                            value={formData.direccion}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        {error && <p style={{ color: "red" }}>{error}</p>}
+
+                        <button type="submit" className="hero-btn">Registrarse</button>
+                    </form>
+                </div>
+            </main>
         </div>
     );
 }

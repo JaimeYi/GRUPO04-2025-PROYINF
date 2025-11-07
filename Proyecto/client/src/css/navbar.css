@@ -2,14 +2,16 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-color: rgb(39, 71, 255);
+    background-color: #4577E970;
     width: auto;
-    box-shadow: 0 0 2px 0 #000000;
+    box-shadow: 0 0 10px 0 #000000;
 }
 
+
 .navbar img{
-    width: 50px;
-    padding: 5px;
+    width: 60px;
+    padding: 10px;
+    opacity: 1;
 }
 
 .navbar ul {
@@ -23,21 +25,31 @@
 }
 
 .navbar .listButtons a {
-    background-color: rgb(252, 199, 28);
+    background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
     color: #242424;
     border-radius: 30px;
-    margin: 5px;
+    margin: 1px;
     padding: 15px;
     text-decoration: none;
+    font-weight: 600;
     text-shadow: none;
+    display: inline-block;
+    transition: transform 0.08s ease, filter 0.12s ease, background-image 0.12s ease;
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
+    border: 2px solid #00000038;
 }
 
 .navbar .listButtons a:hover{
-    background-color: rgb(201, 159, 23);
+    /* variante más oscura del degradado para hover */
+    background-image: linear-gradient(90deg, #95C98E 0%, #D9F0F6 100%);
+    filter: brightness(0.98);
+    transform: translateY(-1px);
 }
 
 .navbar .listButtons a:active{
-    background-color: rgb(155, 123, 18);
+    /* variante aún más oscura para active */
+    background-image: linear-gradient(90deg, #CCFF7C 0%, #D9F0F6 100%);
+    transform: translateY(0);
 }
 
 a:visited {
