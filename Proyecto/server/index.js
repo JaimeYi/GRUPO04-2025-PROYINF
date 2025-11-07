@@ -7,9 +7,9 @@ const port = 5000;
 
 const app = express();
 
-const userManagementRoutes = require("./controller/userManagement");
-const simulator = require("./controller/simulator");
-const pdfParser = require("./controller/pdfParser");
+const userManagementRoutes = require("./src/routes/userManagement.routes");
+const simulator = require("./src/routes/simulator.routes");
+const pdfParser = require("./src/routes/iaHelper.routes");
 
 // --- Middlewares ---
 app.use(express.json()); // lectura de JSON

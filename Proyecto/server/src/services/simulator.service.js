@@ -1,24 +1,17 @@
-const { Router } = require("express");
+const pool = require("../../db.js");
 const { rate } = require("financial");
-const pool = require("../db");
-const { verifyToken } = require("../middleware/verifyToken.js");
-const router = Router();
+const defaultConfig = require("../config/simulator.config.js");
 
-router.post("/api/simulator/calculateCredit", async (req, res) => {
-    creditData = req.body;
-
+const calculateCreditService = async (creditData) => {
     // --- Definicion de variables ---
-    const gastosExtras = 3000;
-    const costoPorSeguro = 3000;
-    let tasaInteres = 0.0219; // valor temporal para la tasa de interes, consultar con cliente monto real
+    const gastosExtras = defaultConfig.gastosExtras;
+    const costoPorSeguro = defaultConfig.costoPorSeguro;
+    let tasaInteres = defaultConfig.tasaInteres;
     const numeroDePeriodos = creditData.plazoCredito;
 
-    
-
-    // --- Realizacion de calculos ---
     const costoSeguros =
         (creditData.seguroDeCesantia + creditData.seguroDeDegravamen) *
-        costoPorSeguro; // consultar con cliente como definir los costos de los seguros asociados al credito
+        costoPorSeguro;
 
     const principalTotalFinanciado =
         creditData.montoSimulacion + gastosExtras + costoSeguros;
@@ -77,47 +70,42 @@ router.post("/api/simulator/calculateCredit", async (req, res) => {
         }
     } catch (err) {
         console.log(err);
+        return null;
     }
 
     console.log("Simulacion almacenada correctamente");
 
     tasaInteres = tasaInteres * 100;
-    cae = cae.toFixed(4) * 100;
+    cae = cae.toFixed(defaultConfig.cifrasDecimalesPermitidas) * 100;
 
-    res.status(200).json({
+    return {
         cuotaMensual,
         ctc,
         tasaInteres,
         cae,
         costoSeguros,
-    });
-});
+    };
+};
 
-router.get(
-    "/api/simulator/simulationHistory",
-    verifyToken,
-    async (req, res) => {
-        const userType = req.user.userType;
-        const userID = req.user.sessionId;
-
-        try {
-            if (userType === "noCliente") {
-                const result = await pool.query(
-                    "SELECT * FROM historialsimulacion WHERE guestID = $1 ORDER BY idsimulacion DESC LIMIT 10",
-                    [userID]
-                );
-                res.status(200).json(result.rows);
-            } else if (userType === "cliente") {
-                const result = await pool.query(
-                    "SELECT * FROM historialsimulacion WHERE rutUsuario = $1  ORDER BY idsimulacion DESC LIMIT 10",
-                    [userID]
-                );
-                res.status(200).json(result.rows);
-            }
-        } catch (err) {
-            console.log(err);
+const simulationHistoryService = async (userType, userID) => {
+    try {
+        if (userType === "noCliente") {
+            const result = await pool.query(
+                "SELECT * FROM historialsimulacion WHERE guestID = $1 ORDER BY idsimulacion DESC LIMIT 10",
+                [userID]
+            );
+            return result.rows
+        } else if (userType === "cliente") {
+            const result = await pool.query(
+                "SELECT * FROM historialsimulacion WHERE rutUsuario = $1  ORDER BY idsimulacion DESC LIMIT 10",
+                [userID]
+            );
+            return result.rows;
         }
+    } catch (err) {
+        console.log(err);
+        return null
     }
-);
+};
 
-module.exports = router;
+module.exports = { calculateCreditService, simulationHistoryService };
