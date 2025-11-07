@@ -9,6 +9,7 @@ const app = express();
 
 const userManagementRoutes = require("./controller/userManagement");
 const simulator = require("./controller/simulator");
+const pdfParser = require("./controller/pdfParser");
 
 // --- Middlewares ---
 app.use(express.json()); // lectura de JSON
@@ -23,6 +24,7 @@ app.use(cookieParser()); // habilitar lectura y escritura de Cookies
 // --- Rutas ---
 app.use(userManagementRoutes);
 app.use(simulator);
+app.use(pdfParser);
 
 app.get("/", (req, res) => {
     res.send("<h1>Home página créditos de consumo</h1>");
