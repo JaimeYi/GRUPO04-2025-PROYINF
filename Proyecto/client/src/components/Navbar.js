@@ -1,11 +1,11 @@
 import "../css/navbar.css";
 import Logo from "../media/svg/banking-online-web-bank-svgrepo-com.svg";
 import { useAuth } from "./auth";
-import {Link} from "react-router-dom"
+import { Link, useLocation } from "react-router-dom";
 
 function Navbar() {
     const { user, logout, isLoading } = useAuth(); // Usar esta linea en cada vista que se requiera verificar si el usuario esta logeado o no
-
+    const location = useLocation();
     const logoLink = (
         <Link to="/" className="logo">
             <img src={Logo} alt="Logo" className="logo" />
@@ -15,6 +15,11 @@ function Navbar() {
     if (isLoading) {
         return null;
     }
+
+    const openHistory = () => {
+        // Dispatch a window event to open the modal from Simulator
+        window.dispatchEvent(new Event("openHistoryModal"));
+    };
 
     return (
         <nav className="navbar">
@@ -34,8 +39,16 @@ function Navbar() {
                         <li>
                             <a href="/profile">Mi perfil</a>
                         </li>
+                        {/* 👇 Only show this when on the simulator page */}
+                        {location.pathname === "/simulator" && (
+                            <li>
+                                <button className="navbar-btn" onClick={openHistory}>
+                                    Historial
+                                </button>
+                            </li>
+                        )}
                         <li>
-                            <button onClick={logout}>Cerrar Sesión</button>
+                            <button className="navbar-btn" onClick={logout}>Cerrar Sesión</button>
                         </li>
                     </>
                 )}

@@ -65,7 +65,7 @@ function Register() {
 
             console.log("Respuesta del servidor:", result);
             alert(`¡Registro exitoso ${formData.nombre}! Serás redirigido.`);
-            navigate("/");
+            navigate("/login");
         } catch (error) {
             setError(error.message);
         }

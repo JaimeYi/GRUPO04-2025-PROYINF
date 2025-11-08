@@ -1,20 +1,37 @@
-.background{
+.background-register-guest{
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
+    top: -38vh;
+    left: -105vh;
+    width: 150vw;
     height: 100vh;
     background: rgba(0,0,0,0.7);
-    z-index: 100;
+    z-index: 200;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.card{
+.card-register-guest{
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     max-width: 500px;
     width: 90%;
+}
+
+.titleCard-guest{
+    color: black;
+}
+
+.labelCard-guest{
+    color: black;
+}
+
+.inputCard-guest{
+    border: 2px solid rgb(80, 80, 80) !important;
+    color: black !important;
+}
+
+.divCard-guest{
+    color: black;
 }

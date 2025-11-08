@@ -1,15 +1,5 @@
 body {
     background-color: #d8d8d8;
     margin: 0;
-    /* Imagen de fondo general: coloca el archivo (por ejemplo bg.jpg) en la carpeta `public` */
-    background-image: url('../media/images/fondo.jpg');
-    background-size: cover; /* cubrir toda la pantalla */
-    background-position: center center; /* centrar la imagen */
-    background-repeat: no-repeat;
-    background-attachment: fixed; /* opcional: fija la imagen al viewport */
-     /* Si necesitas oscurecer la imagen para mejorar contraste, usa un gradiente encima:
-         background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)), url('/bg.jpg') center/cover no-repeat;
-     */
-     /* Reservar espacio para la barra inferior fija para que el contenido no quede oculto */
-     padding-bottom: 80px;
+    padding-bottom: 80px;
 }
