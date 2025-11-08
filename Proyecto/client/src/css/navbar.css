@@ -60,3 +60,54 @@ a:visited {
     display: flex;
     justify-content: space-between;
 }
+
+/* Match "Cerrar sesión" button style with link buttons */
+.navbar .listButtons .nav-button {
+    background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
+    color: #242424;
+    border-radius: 30px;
+    margin: 1px;
+    padding: 15px;
+    text-decoration: none;
+    font-weight: 600;
+    text-shadow: none;
+    display: inline-block;
+    transition: transform 0.08s ease, filter 0.12s ease, background-image 0.12s ease;
+    box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
+    border: 2px solid #00000038;
+    cursor: pointer;
+}
+
+/* Hover effect same as links */
+.navbar .listButtons .nav-button:hover {
+    background-image: linear-gradient(90deg, #95C98E 0%, #D9F0F6 100%);
+    filter: brightness(0.98);
+    transform: translateY(-1px);
+}
+
+/* Active (pressed) state */
+.navbar .listButtons .nav-button:active {
+    background-image: linear-gradient(90deg, #CCFF7C 0%, #D9F0F6 100%);
+    transform: translateY(0);
+}
+
+
+
+.navbar .listButtons button {
+  background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
+  color: #242424;
+  border-radius: 30px;
+  margin: 1px;
+  padding: 15px;
+  font-weight: 600;
+  border: 2px solid #00000038;
+  box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.12s ease, background-image 0.12s ease;
+}
+
+.navbar .listButtons button:hover {
+  background-image: linear-gradient(90deg, #95C98E 0%, #D9F0F6 100%);
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+}

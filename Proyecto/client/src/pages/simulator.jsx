@@ -3,6 +3,11 @@ import { useAuth } from "../components/auth";
 import { useState, useEffect } from "react";
 import { rutVerifier } from "../utils/rutVerifier";
 import "../css/cardData.css";
+import GlassPanel from "../components/GlassPanel";
+import BottomBar from "../components/BottomBar";
+import { Link, useLocation } from "react-router-dom";
+import HistoryModal from "../components/HistoryModal";
+import { formatMoney } from "../utils/formatMoney";
 
 function CardData({ onClose }) {
     const [formData, setFormData] = useState({
@@ -119,6 +124,7 @@ function Simulator() {
     const [isVisible, setIsVisible] = useState(false);
     const [error, setError] = useState("");
     const [historySimulation, setHistorySimulation] = useState([]);
+    const [showHistory, setShowHistory] = useState(false);
     const [creditData, setCreditData] = useState({
         cuotaMensual: "",
         ctc: "",
@@ -172,21 +178,8 @@ function Simulator() {
         setHistorySimulation(result);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
 
-        if (formData.plazoCredito < 1) {
-            setError("Seleccione cantidad de cuotas");
-            return;
-        }
-
-        formData.userType = user.userType;
-        if (formData.userType === "noCliente") {
-            formData.userID = user.sessionId;
-        } else {
-            formData.userID = user.rut;
-        }
-
+    const calculateCredit = async (data) => {
         try {
             const response = await fetch(
                 "http://localhost:5000/api/simulator/calculateCredit",
@@ -195,7 +188,7 @@ function Simulator() {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify(data),
                     credentials: "include",
                 }
             );
@@ -203,9 +196,7 @@ function Simulator() {
             const result = await response.json();
 
             if (!response.ok) {
-                throw new Error(
-                    result.error || "Ocurrió un error desconocido."
-                );
+                throw new Error(result.error || "Ocurrió un error desconocido.");
             }
 
             setCreditData({
@@ -219,161 +210,216 @@ function Simulator() {
             getSimulationHistory();
         } catch (error) {
             console.log(error);
-            setError("Datos invalidos.");
+            setError("Datos inválidos.");
         }
+    };
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (formData.plazoCredito < 1) {
+            setError("Seleccione cantidad de cuotas");
+            return;
+        }
+
+        const preparedData = {
+            ...formData,
+            userType: user.userType,
+            userID: user.userType === "noCliente" ? user.sessionId : user.rut,
+        };
+
+        await calculateCredit(preparedData);
+    };
+
+
+    const handleRestore = async (item) => {
+        const restoredData = {
+            montoSimulacion: item.montosimulado,
+            plazoCredito: item.plazocredito,
+            seguroDeDegravamen: item.segurodedegravamen,
+            seguroDeCesantia: item.segurodecesantia,
+            userID: user.userType === "noCliente" ? user.sessionId : user.rut,
+            userType: user.userType,
+        };
+
+        setFormData(restoredData);
+        setShowHistory(false);
+
+        await calculateCredit(restoredData);
     };
 
     const toggleVisibility = () => {
         setIsVisible(!isVisible);
     };
 
+    const [resultColor, setResultColor] = useState("#ffffffff");
+
     useEffect(() => {
         getSimulationHistory();
+    }, []);
+
+    useEffect(() => {
+        const openHandler = () => setShowHistory(true);
+        window.addEventListener("openHistoryModal", openHandler);
+        return () => window.removeEventListener("openHistoryModal", openHandler);
     }, []);
 
     if (isLoading) {
         return null;
     }
 
+    
     return (
-        <div>
-            <Navbar />
-            {!(user === null) ? (
+        <>
+        <Navbar />
+
+        <div style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "calc(100vh - 100px)",
+            padding: "60px 0",
+            textAlign: "center"
+        }}>
+            <GlassPanel>
+            {user ? (
                 <>
-                    <form onSubmit={handleSubmit}>
-                        <div>
-                            <label htmlFor="montoSimulacion">
-                                Monto a simular:
-                            </label>
-                            <input
-                                type="number"
-                                id="montoSimulacion"
-                                name="montoSimulacion"
-                                value={formData.montoSimulacion}
-                                onChange={handleChange}
-                                min={100000}
-                                max={99999999}
-                                maxLength={8}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="plazoCredito">
-                                Cantidad de cuotas:
-                                <strong> {formData.plazoCredito}</strong>
-                            </label>
-                            <div>
-                                <input
-                                    type="range"
-                                    id="plazoCredito"
-                                    name="plazoCredito"
-                                    value={formData.plazoCredito}
-                                    onChange={handleChange}
-                                    min="1"
-                                    max="64"
-                                    step="1"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label htmlFor="seguros">
-                                Seleccionar seguros que desee agregar:
-                            </label>
-                            <div>
-                                <label>
-                                    Seguro de Degravamen
-                                    <input
-                                        type="checkbox"
-                                        name="seguroDeDegravamen"
-                                        checked={formData.seguroDeDegravamen}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            </div>
-                            <div>
-                                <label>
-                                    Seguro de Cesantia
-                                    <input
-                                        type="checkbox"
-                                        name="seguroDeCesantia"
-                                        checked={formData.seguroDeCesantia}
-                                        onChange={handleChange}
-                                    />
-                                </label>
-                            </div>
-                            <input
-                                type="text"
-                                name="userID"
-                                value={
-                                    user.userType === "noCliente"
-                                        ? user.sessionId
-                                        : user.rut
-                                }
-                                hidden
-                            />
-                        </div>
-                        <button type="submit">Simular</button>
-                    </form>
-                    {error && !(creditData.cuotaMensual >= 1) && (
-                        <p style={{ color: "red" }}>{error}</p>
-                    )}
-                    <hr />
-                    {creditData.cuotaMensual >= 1 && (
-                        <p style={{ color: "green" }}>
-                            Cuota mensual: ${creditData.cuotaMensual}
-                        </p>
-                    )}
-                    {creditData.cuotaMensual >= 1 && (
-                        <p style={{ color: "green" }}>
-                            Costo Total del Crédito (CTC): ${creditData.ctc}
-                        </p>
-                    )}
-                    {creditData.cuotaMensual >= 1 && (
-                        <p style={{ color: "green" }}>
-                            Tasa de interés: {creditData.tasaInteres}%
-                        </p>
-                    )}
-                    {creditData.cuotaMensual >= 1 && (
-                        <p style={{ color: "green" }}>
-                            Carga Anual Equivalente (CAE): {creditData.cae}%
-                        </p>
-                    )}
+                <form onSubmit={handleSubmit}>
+                    <div>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, color: 'white' }}>
+                        Monto a simular:
+                    </label>
+                    <input
+                        type="text"
+                        name="montoSimulacion"
+                        value={formatMoney(formData.montoSimulacion)}
+                        onChange={(e) => {
+                            const raw = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                            const num = raw === "" ? 100000 : Math.min(parseInt(raw, 10), 99999999);
+                            handleChange({ target: { name: "montoSimulacion", value: num } });
+                        }}
+                        min={100000}
+                        max={99999999}
+                        className="monto-input"
+                        required
+                        placeholder="$100.000"
+                    />
+                    </div>
+
+                    <div>
+                    <label style={{ display: 'block', textAlign: 'center', marginBottom: '0.5rem', fontWeight: 600, color: 'white' }}>
+                        Cantidad de cuotas: <strong className="cuotas-display">{formData.plazoCredito}</strong>
+                    </label>
+                    <input type="range" name="plazoCredito" value={formData.plazoCredito} onChange={handleChange} min={1} max={64} step={1} className="custom-range" required />
+                    </div>
+
+                    <div>
+                    <label style={{ display: "block", marginBottom: "0.75rem", fontWeight: 600, color: "white" }}>
+                        Seleccionar seguros que desee agregar:
+                    </label>
+                    <div className="checkbox-group">
+                        <label className="checkbox-item">
+                        <input type="checkbox" name="seguroDeDegravamen" checked={formData.seguroDeDegravamen} onChange={handleChange} />
+                        Seguro de Degravamen
+                        </label>
+                        <label className="checkbox-item">
+                        <input type="checkbox" name="seguroDeCesantia" checked={formData.seguroDeCesantia} onChange={handleChange} />
+                        Seguro de Cesantía
+                        </label>
+                    </div>
+                    </div>
+
+                    <input type="hidden" name="userID" value={user.userType === "noCliente" ? user.sessionId : user.rut} />
+
+                    <div style={{ marginTop: "2rem" }}>
+                    <button type="submit" className="navbar-btn">Simular</button>
+                    </div>
+                </form>
+
+                {error && !creditData.cuotaMensual && <p style={{ color: "red" }}>{error}</p>}
+
+                <hr style={{ borderColor: "rgba(255,255,255,0.3)", margin: "2rem 0" }} />
+
+                {/* RESULTS */}
+                {creditData.cuotaMensual && (
+                <div className="simulation-results">
+                    <div className="result-item">
+                    <div className="result-icon">1</div>
+                    <span className="result-label">Cuota mensual:</span>
+                    <span className="result-value">{formatMoney(creditData.cuotaMensual)}</span>
+                    </div>
+
+                    <div className="result-item">
+                    <div className="result-icon">2</div>
+                    <span className="result-label">Costo Total (CTC):</span>
+                    <span className="result-value">{formatMoney(creditData.ctc)}</span>
+                    </div>
+
+                    <div className="result-item">
+                    <div className="result-icon">3</div>
+                    <span className="result-label">Tasa de interés:</span>
+                    <span className="result-value">{creditData.tasaInteres}%</span>
+                    </div>
+
+                    <div className="result-item">
+                    <div className="result-icon">4</div>
+                    <span className="result-label">CAE:</span>
+                    <span className="result-value">{parseFloat(creditData.cae).toFixed(2)}%</span>
+                    </div>
+
                     {creditData.costoSeguros > 0 && (
-                        <p style={{ color: "green" }}>
-                            Total seguros: {creditData.costoSeguros}
-                        </p>
+                    <div className="result-item">
+                        <div className="result-icon">5</div>
+                        <span className="result-label">Total seguros:</span>
+                        <span className="result-value">{formatMoney(creditData.costoSeguros)}</span>
+                    </div>
                     )}
-                    <hr />
-                    {historySimulation.length !== 0 ? (
-                        <>
-                            <h3>Mis ultimas 10 simulaciones</h3>
-                            <ul>
-                                {historySimulation.map((item) => (
-                                    <li key={item.idsimulacion}>
-                                        monto requerido: {item.montosimulado},
-                                        monto final: {item.ctc}, valor cuota:{" "}
-                                        {item.cuotamensual}, cantidad de cuotas:{" "}
-                                        {item.plazocredito}
-                                    </li>
-                                ))}
-                            </ul>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                    <hr />
-                    <a href="/creditApplication">Solicitar crédito simulado</a>
+                </div>
+                )}
+
+                {/* BUTTONS – NOW VISIBLE & CENTERED */}
+                <div style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "1.5rem",
+                marginTop: "2rem",
+                flexWrap: "wrap"
+                }}>
+                <button
+                    type="button"
+                    className="navbar-btn navbar-btn-green"
+                    onClick={() => alert("Simulación enviada al correo!")}
+                >
+                    Enviar simulación a email
+                </button>
+
+                <Link to="/creditApplication" className="navbar-btn">
+                    Solicitar crédito simulado
+                </Link>
+                </div>
                 </>
             ) : (
                 <>
-                    <h3>Antes de comenzar</h3>
-                    <a href="/login">Soy cliente</a>
-                    <button onClick={toggleVisibility}>No soy cliente</button>
-                    {isVisible && <CardData onClose={toggleVisibility} />}
+                <h3>Antes de comenzar</h3>
+                <a href="/login">Soy cliente</a>
+                <button onClick={toggleVisibility}>No soy cliente</button>
+                {isVisible && <CardData onClose={toggleVisibility} />}
                 </>
             )}
+            </GlassPanel>
         </div>
+
+        {showHistory && (
+            <HistoryModal
+            history={historySimulation}
+            onClose={() => setShowHistory(false)}
+            onRestore={handleRestore}
+            />
+        )}
+
+        <BottomBar />
+        </>
     );
 }
 

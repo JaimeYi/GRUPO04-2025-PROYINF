@@ -11,11 +11,14 @@
     "react-dom": "^19.2.0",
     "react-imask": "^7.6.1",
     "react-router-dom": "^7.9.4",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
+    "sass": "^1.93.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
+    "stop": "kill-port 3000",
+    "restart": "npm stop && npm start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -37,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "kill-port": "^2.0.1"
   }
 }

@@ -1,0 +1,345 @@
+/* -------------------------------------------------
+   GLASS PANEL – MAIN CONTAINER
+   ------------------------------------------------- */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 2rem;
+  color: #fff;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
+}
+
+/* -------------------------------------------------
+   INPUTS & BUTTONS INSIDE GLASS PANEL
+   ------------------------------------------------- */
+.glass-panel input,
+.glass-panel select {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+
+/* -------------------------------------------------
+   NAVBAR-STYLE BUTTONS – REUSABLE BASE
+   ------------------------------------------------- */
+.navbar-btn {
+  all: unset;
+  display: inline-block;
+  background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
+  color: #242424;
+  border-radius: 30px;
+  padding: 14px 28px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 5px 5px 5px 0 rgba(0, 0, 0, 0.2);
+  border: 2px solid #00000038;
+  transition: transform 0.08s ease, filter 0.12s ease, background-image 0.12s ease;
+  cursor: pointer;
+  min-width: 180px;
+}
+
+.navbar-btn:hover {
+  background-image: linear-gradient(90deg, #95C98E 0%, #D9F0F6 100%);
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+}
+
+.navbar-btn:active {
+  background-image: linear-gradient(90deg, #CCFF7C 0%, #D9F0F6 100%);
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------
+   GREEN VARIANT – "Enviar simulación a email"
+   ------------------------------------------------- */
+.navbar-btn-green {
+  background-image: linear-gradient(90deg, #4CAF50 0%, #8BC34A 50%, #DCEDC8 100%);
+  color: #1a3d1a;
+}
+
+.navbar-btn-green:hover {
+  background-image: linear-gradient(90deg, #7CB342 0%, #AED581 100%);
+}
+
+/* -------------------------------------------------
+   HISTORY RESTORE BUTTON – SMALLER VERSION
+   ------------------------------------------------- */
+.history-restore-btn {
+  display: inline-block;
+  background-image: linear-gradient(90deg, #38ABE4 0%, #84CDEC 50%, #D9F0F6 100%);
+  color: #242424;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #00000038;
+  transition: transform 0.08s ease, filter 0.12s ease;
+  cursor: pointer;
+  min-width: 140px;
+  margin: 0.5rem auto;
+}
+
+.history-restore-btn:hover {
+  background-image: linear-gradient(90deg, #95C98E 0%, #D9F0F6 100%);
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+}
+
+.history-restore-btn:active {
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------
+   CHECKBOXES – INLINE & STYLED
+   ------------------------------------------------- */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #50a0ff;
+  cursor: pointer;
+}
+
+.checkbox-item input[type="checkbox"]:focus-visible {
+  outline: 2px solid rgba(80, 150, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------
+   CUSTOM RANGE SLIDER
+   ------------------------------------------------- */
+.custom-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  outline: none;
+  margin: 12px 0;
+  backdrop-filter: blur(2px);
+}
+
+/* Track (progress) */
+.custom-range::-webkit-slider-runnable-track {
+  height: 8px;
+  background: linear-gradient(90deg, #38ABE4 0%, #84CDEC 100%);
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.custom-range::-moz-range-track {
+  height: 8px;
+  background: linear-gradient(90deg, #38ABE4 0%, #84CDEC 100%);
+  border-radius: 4px;
+  border: none;
+}
+
+/* Thumb (handle) */
+.custom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  background: #38ABE4;
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-top: -8px;
+}
+
+.custom-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  background: #38ABE4;
+  border: 3px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Hover & Active */
+.custom-range:hover::-webkit-slider-thumb {
+  background: #50a0ff;
+  transform: scale(1.1);
+}
+
+.custom-range:active::-webkit-slider-thumb {
+  transform: scale(0.95);
+}
+
+/* -------------------------------------------------
+   MONTO INPUT – CENTERED, BIGGER, COMPACT
+   ------------------------------------------------- */
+.monto-input {
+  display: block;
+  width: 280px !important;           /* Matches button min-width */
+  max-width: 100%;
+  margin: 1rem auto 0 !important;    /* Centers it */
+  text-align: center;
+  font-size: 1.5rem !important;      /* BIGGER */
+  font-weight: 600 !important;
+  padding: 0.75rem !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 12px !important;
+  color: white !important;
+}
+
+/* -------------------------------------------------
+   CUOTAS NUMBER – BIGGER & CLEARER
+   ------------------------------------------------- */
+.cuotas-display {
+  display: inline-block;
+  font-size: 2.1rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  margin: 0.5rem 0 0.75rem;
+}
+
+/* -------------------------------------------------
+   SIMULATION RESULTS – GRID 
+   ------------------------------------------------- */
+.simulation-results {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid;
+  gap: 1rem;
+  text-align: center;
+}
+
+.result-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.result-icon {
+  width: 32px;
+  height: 32px;
+  background: #38ABE4;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.result-label {
+  color: #d0e8ff;
+  font-weight: 500;
+  text-align: right;
+  justify-self: end;
+}
+
+.result-value {
+  color: #ffffff;
+  font-weight: 700;
+  text-align: left;
+  justify-self: start;
+}
+
+/* -------------------------------------------------
+   HISTORY MODAL – 4‑COLUMN GRID
+   ------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: rgba(255,255,255,.12);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 520px;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
+  text-align: center;
+}
+
+.history-list {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.history-item {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;           /* ← SPACE BETWEEN GRID & BUTTON */
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 0.8rem;
+  font-size: 1.1rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.history-grid strong {
+  color: #fff;
+  min-width: 140px;
+}

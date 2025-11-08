@@ -10,9 +10,24 @@ import CreditApplication from "./pages/creditApplication"
 // import NotFoundPage from './pages/NotFoundPage';
 import "./css/index.css";
 import BottomBar from "./components/BottomBar";
+import AnimatedBackground from "./components/AnimatedBackground";
 
 function App() {
     return (
+        <div style={{ position: "relative", minHeight: "100vh", overflow: "hidden" }}>
+            {/* Animated background — fixed layer behind everything */}
+            <div
+                style={{
+                position: "fixed",
+                inset: 0,
+                zIndex: -1,
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                }}
+            >
+                <AnimatedBackground />
+            </div>
         <div>
             {/* Aquí se define qué componente renderizar para cada ruta */}
             <Routes>
@@ -26,6 +41,7 @@ function App() {
             </Routes>
             {/* Barra fija inferior visible en todas las páginas */}
             <BottomBar />
+        </div>
         </div>
     );
 }
