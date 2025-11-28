@@ -39,10 +39,10 @@ function Register() {
             return;
         }
         
-        if (await isInvalidRUT(formData.rut)){
-            setError("El rut ingresado es inválido");
-            return;
-        }
+        // if (await isInvalidRUT(formData.rut)){
+        //     setError("El rut ingresado es inválido");
+        //     return;
+        // }
         
         let salary = 0
         setLoading("True");
