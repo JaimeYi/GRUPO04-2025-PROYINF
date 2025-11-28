@@ -4,7 +4,6 @@ CREATE TABLE cliente (
 	correo VARCHAR(255) NOT NULL,
 	contraseña VARCHAR(60) NOT NULL,
 	numeroTelefono VARCHAR(12) NOT NULL,
-	ocupacion VARCHAR(100) NOT NULL,
 	ingresoLiquido INT NOT NULL,
 	direccion VARCHAR(255) NOT NULL
 );

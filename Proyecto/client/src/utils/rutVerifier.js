@@ -1,4 +1,13 @@
-const rutVerifier = (rut) => {
+/**
+* Se verifica si el rut proporcionado es valido o invalido.
+* @param {string} rut - RUT que se busca analizar (el formato debe ser XXXXXXXX-X o XXXXXXX-X).
+* @returns {Boolean} true si el rut es invalido, false si el rut es valido
+* 
+* @example
+* const validRUT = isInvalidRUT("11111111-1");
+* console.log(validRUT); // Output: true
+*/
+const isInvalidRUT = (rut) => {
     const dv = rut.slice(-1);
     const body = rut.slice(0, -2);
 
@@ -40,4 +49,4 @@ const rutVerifier = (rut) => {
     }
 };
 
-module.exports = {rutVerifier}
+module.exports = {isInvalidRUT}
