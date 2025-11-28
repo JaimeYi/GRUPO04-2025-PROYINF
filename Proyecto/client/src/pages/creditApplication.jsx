@@ -56,15 +56,22 @@ function CreditApplication() {
     }
 
     // Obtiene campos del perfil del usuario (se asume que están cargados ahí)
-    const perfil = user?.profile || {};
-    const {
-      ingresoMensual,
-      mesesAntiguedadLaboral,
-      deudasVigentes,
-      morosidad = false,
-      protestos = false,
-      edad,
-    } = perfil;
+    // const perfil = user?.profile || {};
+    // const {
+    //   ingresoMensual,
+    //   mesesAntiguedadLaboral,
+    //   deudasVigentes,
+    //   morosidad = false,
+    //   protestos = false,
+    //   edad,
+    // } = perfil;
+
+    const ingresoMensual = 707021;
+    const mesesAntiguedadLaboral = 48;
+    const deudasVigentes = 0;
+    const morosidad = false;
+    const protestos=  false;
+    const edad = 50;
 
     // Validación mínima para evitar llamadas incompletas
     const faltantes = [
@@ -149,17 +156,6 @@ function CreditApplication() {
                 <h3 style={{ color: "white" }}>
                   Score: {scoreResult.score}
                 </h3>
-                <pre
-                  style={{
-                    color: "white",
-                    background: "rgba(255,255,255,0.08)",
-                    padding: "12px 16px",
-                    borderRadius: 8,
-                    overflowX: "auto",
-                  }}
-                >
-{JSON.stringify(scoreResult.breakdown, null, 2)}
-                </pre>
               </div>
             )}
           </div>

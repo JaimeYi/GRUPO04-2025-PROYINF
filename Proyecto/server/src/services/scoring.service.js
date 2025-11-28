@@ -127,9 +127,7 @@ exports.computeScore = async (input, cfgOverride) => {
 
   return {
     score,
-    breakdown: comp,
-    // ELIMINAR ANTES DE PRODUCCION
-    usedConfig: finalCfg
+    breakdown: comp
   };
 };
 
