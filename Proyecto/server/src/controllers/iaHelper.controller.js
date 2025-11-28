@@ -1,18 +1,24 @@
-const {iaCall} = require("../services/iaHelper.service")
+const {iaCall, iaValidation} = require("../services/iaHelper.service")
+const {promptDoc, promptValidation} = require("../config/iaHelper.config")
 
 getSalaryPDF = (async (req, res) => {
-    const prompt = "Eres un experto analizador de contratos laborales, en esta ocasion se te proporcionaran liquidaciones de sueldo. debes analizar las liquidaciones de sueldo y retornar unicamente el sueldo que se describe en el documento sin puntos ni comas. En caso de no tener un monto valido, retorna -1. Debes considerar el sueldo como el sueldo liquido, no el sueldo bruto. Cada vez que lo analices debes asegurarte de que el sueldo liquido que seleccionas es el correcto.";
     if (!req.file) {
         return res.status(400).json({ error: "Falta el archivo PDF." });
     }
 
-    const aiCallResult = await iaCall(req, prompt);
+    const aiCallResult = await iaCall(req, promptDoc);
 
     if (aiCallResult === -1){
         res.status(500).json({error: "Error al analizar PDF."});
-    } else {
-        res.json({"answer": aiCallResult});
     }
+
+    const aiValidationResult = await iaValidation(req, promptValidation, aiCallResult);
+
+    if (aiValidationResult === -1){
+        res.status(500).json({error: "Error al realizar la validación."});
+    }
+
+    res.json({"answer": aiValidationResult});
 })
 
 module.exports = {getSalaryPDF};

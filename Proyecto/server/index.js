@@ -11,6 +11,7 @@ const userManagementRoutes = require("./src/routes/userManagement.routes");
 const simulator = require("./src/routes/simulator.routes");
 const pdfParser = require("./src/routes/iaHelper.routes");
 const scoring = require("./src/routes/scoring.routes");
+const webpay = require("./src/routes/webpay.routes");
 
 // --- Middlewares ---
 app.use(express.json()); // lectura de JSON
@@ -27,6 +28,7 @@ app.use(userManagementRoutes);
 app.use(simulator);
 app.use(pdfParser);
 app.use(scoring);
+app.use(webpay);
 
 app.get("/", (req, res) => {
     res.send("<h1>Home página créditos de consumo</h1>");

@@ -6,6 +6,9 @@ import Register from "./pages/register";
 import Profile from "./pages/profile";
 import Simulator from "./pages/simulator";
 import CreditApplication from "./pages/creditApplication"
+import PaymentButton from "./pages/pay";
+import CommitPayment from "./pages/commitPayment";
+
 // import ProfilePage from './pages/ProfilePage';
 // import NotFoundPage from './pages/NotFoundPage';
 import "./css/index.css";
@@ -37,6 +40,8 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/simulator" element={<Simulator />} />
                 <Route path="/creditApplication" element={<CreditApplication />}/>
+                <Route path="/pay" element={<PaymentButton />}/>
+                <Route path="/commit-payment" element={<CommitPayment />}/>
         {/* <Route path="*" element={<NotFoundPage />} /> Ruta para 404 */}
             </Routes>
             {/* Barra fija inferior visible en todas las páginas */}

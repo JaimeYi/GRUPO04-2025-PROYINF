@@ -9,7 +9,7 @@ const router = Router();
 const upload = multer({dest: uploadPath})
 
 
-router.post("/api/pdfParser/", upload.single('pdfFile'), (req, res) => {
+router.post("/api/pdfParser", upload.single('pdfFile'), (req, res) => {
     getSalaryPDF(req, res)
 })
 

@@ -27,14 +27,13 @@ const registerService = async (userData) => {
         );
 
         const newUser = await pool.query(
-            "INSERT INTO cliente(rut,nombreCompleto,correo,contraseña,numerotelefono,ocupacion,ingresoLiquido,direccion) VALUES (($1),($2),($3),($4),($5),($6),($7),($8))",
+            "INSERT INTO cliente(rut,nombreCompleto,correo,contraseña,numerotelefono,ingresoLiquido,direccion) VALUES (($1),($2),($3),($4),($5),($6),($7))",
             [
                 userData.rut,
                 userData.nombre,
                 userData.correo,
                 hashedPassword,
                 userData.telefono,
-                userData.ocupacion,
                 userData.ingresoLiquido,
                 userData.direccion,
             ]
