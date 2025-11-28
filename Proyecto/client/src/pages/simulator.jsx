@@ -219,6 +219,16 @@ function Simulator() {
                 costoSeguros: result.costoSeguros,
             });
 
+            localStorage.setItem(
+                "lastSimulation",
+                JSON.stringify({
+                    cuotaEstimada: result.cuotaMensual,     // scoring
+                    montoSimulacion: data.montoSimulacion,
+                    plazoCredito: data.plazoCredito,
+                    fecha: new Date().toISOString(),
+                })
+            );
+
             getSimulationHistory();
         } catch (error) {
             console.log(error);
@@ -521,8 +531,9 @@ function Simulator() {
                                 </button>
 
                                 <Link
-                                    to="/creditApplication"
-                                    className="navbar-btn"
+                                  to="/creditApplication"
+                                  state={{ cuotaEstimada: creditData.cuotaMensual }}
+                                  className="navbar-btn"
                                 >
                                     Solicitar crédito simulado
                                 </Link>
