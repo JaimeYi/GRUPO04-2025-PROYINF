@@ -137,6 +137,7 @@ function Register() {
                         <>
                             <h2>Registrarse</h2>
                             <p>Crea tu cuenta para acceder a las simulaciones y obtener recomendaciones personalizadas.</p>
+                            <p>El nombre completo y el rut deben coincidir con los indicados en la liquidación de sueldo que se adjunte.</p>
                             <form onSubmit={handleSubmit} className="card-form">
                                 <label htmlFor="rut">Rut</label>
                                 <input
@@ -150,7 +151,7 @@ function Register() {
                                     required
                                 />
 
-                                <label htmlFor="nombre">Nombre completo (debe coincidir con el nombre en la liquidacion de sueldo)</label>
+                                <label htmlFor="nombre">Nombre completo</label>
                                 <input
                                     type="text"
                                     id="nombre"
