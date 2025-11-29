@@ -9,129 +9,87 @@ import { Link } from "react-router-dom";
 import HistoryModal from "../components/HistoryModal";
 import { formatMoney } from "../utils/formatMoney";
 
-function CardData({ onClose }) {
-    const [formData, setFormData] = useState({
-        rut: "",
-        correo: "",
-        telefono: "",
-    });
-
+function GuestPopup({ onClose }) {
+    const [formData, setFormData] = useState({ rut: "", correo: "", telefono: "" });
     const { setUser } = useAuth();
 
-    const [error, setError] = useState("");
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevState) => ({
-            ...prevState,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(formData.rut);
-
-        // --- Verificar Rut ---
-        if (await rutVerifier(formData.rut)) {
-            setError("El rut ingresado es inválido");
-            return;
-        }
-
-        setError("");
-
-        try {
-            const response = await fetch(
-                "http://localhost:5000/api/userManagement/guest-session",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                    credentials: "include",
-                }
-            );
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    result.error || "Ocurrió un error desconocido."
-                );
-            }
-
-            setUser(result.user);
-            onClose();
-        } catch (error) {
-            setError(error.message);
-        }
+        setUser({
+            userType: "noCliente",
+            sessionId: "guest_" + Date.now(),
+            rut: formData.rut.replace(/[^0-9kK-]/g, "").toUpperCase()
+        });
+        onClose();
     };
 
     return (
-        <div className="background-register-guest">
-            <div className="card-register-guest">
-                <h3 className="titleCard-guest">
+        <div style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.75)",
+            backdropFilter: "blur(8px)",
+            zIndex: 9999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px"
+        }}>
+            <div className="glass-panel max-w-md w-full p-10" style={{ color: "white" }}>
+                <h3 className="text-3xl font-bold text-white text-center mb-10">
                     Ingresa tus datos personales
                 </h3>
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label className="labelCard-guest" htmlFor="rut">
-                            Rut:
-                        </label>
-                        <input
-                            className="inputCard-guest"
-                            type="text"
-                            id="rut"
-                            name="rut"
-                            value={formData.rut}
-                            onChange={handleChange}
-                            maxLength={10}
-                            placeholder="12345678-K"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="labelCard-guest" htmlFor="correo">
-                            Correo Electrónico:
-                        </label>
-                        <input
-                            className="inputCard-guest"
-                            type="email"
-                            id="correo"
-                            name="correo"
-                            value={formData.correo}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="labelCard-guest" htmlFor="telefono">
-                            Número de teléfono:
-                        </label>
-                        <input
-                            className="inputCard-guest"
-                            type="text"
-                            id="telefono"
-                            name="telefono"
-                            value={formData.telefono}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
 
-                    {error && <p style={{ color: "red" }}>{error}</p>}
+                <form onSubmit={handleSubmit} className="space-y-8" style={{ color: "white" }}s>
+                    <input
+                        type="text"
+                        placeholder="12.345.678-K"
+                        className="inputCard-guest w-full text-center text-xl"
+                        maxLength="12"
+                        required
+                        value={formData.rut}
+                        onChange={(e) => setFormData({ ...formData, rut: e.target.value })}
+                    />
 
-                    <button type="submit">Continuar</button>
+                    <input
+                        type="email"
+                        placeholder="tucorreo@ejemplo.cl"
+                        className="inputCard-guest w-full text-center text-xl"
+                        required
+                        value={formData.correo}
+                        onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
+                    />
+
+                    <input
+                        type="tel"
+                        placeholder="+56 9 1234 5678"
+                        className="inputCard-guest w-full text-center text-xl"
+                        required
+                        value={formData.telefono}
+                        onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                    />
+
+                    <div className="flex gap-8 justify-center pt-10">
+                        <button 
+                            type="submit" 
+                            className="navbar-btn navbar-btn-green text-3xl px-20 py-7 font-bold transform hover:scale-110 transition-all"
+                        >
+                            Continuar
+                        </button>
+                        <button type="button" onClick={onClose} className="navbar-btn text-3xl px-20 py-7 font-bold transform hover:scale-110 transition-all">
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
-                <button onClick={onClose}>Cerrar</button>
             </div>
         </div>
     );
 }
 
+
 function Simulator() {
     const { user, isLoading } = useAuth();
+    const [showGuestPopup, setShowGuestPopup] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [error, setError] = useState("");
     const [historySimulation, setHistorySimulation] = useState([]);
@@ -273,6 +231,7 @@ function Simulator() {
         setIsVisible(!isVisible);
     };
 
+
     useEffect(() => {
         getSimulationHistory();
     }, []);
@@ -294,12 +253,11 @@ function Simulator() {
 
             <div
                 style={{
+                    height: "100vh",              
+                    overflow: "hidden",           
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    minHeight: "calc(100vh - 100px)",
-                    padding: "60px 0",
-                    textAlign: "center",
                 }}
             >
                 <GlassPanel>
@@ -425,7 +383,7 @@ function Simulator() {
                                     }
                                 />
 
-                                <div style={{ marginTop: "2rem" }}>
+                                <div style={{ marginTop: "2rem", display: "flex", justifyContent: "center"  }}>
                                     <button
                                         type="submit"
                                         className="navbar-btn"
@@ -539,65 +497,54 @@ function Simulator() {
                                 </Link>
                             </div>
                         </>
-                    ) : (
-                        <>
-                            <h3
-                                style={{
-                                    marginBottom: "1.5rem",
-                                    color: "white",
-                                }}
+                ) : (
+                     <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            textAlign: "center",
+                            gap: "3rem",          
+                            width: "100%",
+                        }}
+                    >
+                        <h2 className="text-5xl font-extrabold text-white mb-20 drop-shadow-2xl">
+                            Antes de comenzar
+                        </h2>
+
+                        <div className="flex flex-col sm:flex-row gap-16 justify-center items-center mt-12 mb-10"
+                            style={{
+                                gap: "4rem",      // ← separa botones mucho más
+                                paddingTop: "1rem"
+                            }}>
+                            <Link
+                                to="/login"
+                                className="navbar-btn navbar-btn-green text-4xl px-20 py-12 transform hover:scale-110 transition-all duration-300 shadow-2xl font-bold"
+                                style={{ minWidth: "380px" }}
                             >
-                                Antes de comenzar
-                            </h3>
+                                Soy cliente
+                            </Link>
 
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "1rem",
-                                    alignItems: "center",
-                                    width: "100%",
-                                }}
+                            {/* NO SOY CLIENTE – AHORA SÍ SE VE COMO BOTÓN REAL */}
+                            <button
+                                onClick={() => setShowGuestPopup(true)}
+                                className="navbar-btn text-4xl px-20 py-12 transform hover:scale-110 transition-all duration-300 shadow-2xl font-bold bg-white/20 backdrop-blur-md border-4 border-white/40 hover:bg-white/30"
+                                style={{ minWidth: "380px" }}
                             >
-                                <Link
-                                    to="/login"
-                                    className="navbar-btn"
-                                    style={{
-                                        width: "220px",
-                                        textAlign: "center",
-                                    }}
-                                >
-                                    Soy cliente
-                                </Link>
-
-                                <button
-                                    onClick={toggleVisibility}
-                                    className="navbar-btn"
-                                    style={{ width: "220px" }}
-                                >
-                                    No soy cliente
-                                </button>
-                            </div>
-
-                            {isVisible && (
-                                <CardData onClose={toggleVisibility} />
-                            )}
-                        </>
+                                No soy cliente
+                            </button>
+                        </div>
+                    </div>
                     )}
                 </GlassPanel>
             </div>
 
-            {showHistory && (
-                <HistoryModal
-                    history={historySimulation}
-                    onClose={() => setShowHistory(false)}
-                    onRestore={handleRestore}
-                />
-            )}
+            {/* POPUP QUE APARECE ENCIMA DE TODO */}
+            {showGuestPopup && <GuestPopup onClose={() => setShowGuestPopup(false)} />}
 
             <BottomBar />
         </>
     );
 }
-
 export default Simulator;
