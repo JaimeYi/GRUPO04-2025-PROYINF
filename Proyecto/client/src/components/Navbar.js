@@ -37,7 +37,7 @@ function Navbar() {
                 ) : (
                     <>
                         <li>
-                            <a href="/profile">Mi perfil</a>
+                            <a href="/pay">Pagar cuotas</a>
                         </li>
                         {/* 👇 Only show this when on the simulator page */}
                         {location.pathname === "/simulator" && (

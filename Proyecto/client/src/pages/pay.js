@@ -1,10 +1,26 @@
-const PaymentButton = () => {
+import Navbar from "../components/Navbar";
+import GlassPanel from "../components/GlassPanel";
+import { useState } from "react";
 
-    const handlePayment = async () => {
-        // 1. Pedimos a NUESTRO backend que inicie la transacción
+const PaymentButton = () => {
+    const [formData, setFormData] = useState({
+            monto: 1
+        });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
+
+    const handlePayment = async (e) => {
+        e.preventDefault();
+
         const orderData = {
-            amount: 10000, // $10.000 CLP
-            buyOrder: "orden_" + Math.floor(Math.random() * 10000),
+            amount: formData.monto, // monto para probar
+            buyOrder: "orden_" + Math.floor(Math.random() * 1000000),
             sessionId: "sesion_" + Date.now()
         };
 
@@ -17,8 +33,6 @@ const PaymentButton = () => {
 
             const data = await response.json();
 
-            // 2. Recibimos el token y la URL. Ahora debemos redirigir al usuario.
-            // Transbank requiere un POST form submit con el token.
             return autoSubmitForm(data.url, data.token);
 
         } catch (error) {
@@ -43,9 +57,30 @@ const PaymentButton = () => {
     };
 
     return (
-        <button onClick={handlePayment} className="hero-btn">
-            Pagar con Webpay
-        </button>
+        <>
+        <Navbar />
+        <div style={{ textAlign: "center", height: "48.3rem", paddingTop: "15rem"}}>
+                <GlassPanel>
+                    <h3>Paga aqui tus cuotas</h3>
+                    <form onSubmit={handlePayment} className="card-form">
+                        <label htmlFor="direccion">Monto a abonar</label>
+                                <input
+                                    type="number"
+                                    id="monto"
+                                    name="monto"
+                                    value={formData.monto}
+                                    onChange={handleChange}
+                                    min={1}
+                                    required
+                                />
+
+                    <button type="submit" className="hero-btn">
+                        Pagar con Webpay
+                    </button>
+                    </form>
+                </GlassPanel>
+            </div>
+        </>
     );
 };
 

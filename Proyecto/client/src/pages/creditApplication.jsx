@@ -1,8 +1,9 @@
 import Navbar from "../components/Navbar";
 import { useAuth } from "../components/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { ReactComponent as MiIcono } from "../media/svg/alert-circle-svgrepo-com.svg";
+import GlassPanel from "../components/GlassPanel";
 import "../css/creditApplication.css";
 
 function CreditApplication() {
@@ -45,7 +46,7 @@ function CreditApplication() {
   // Handler que intenta calcular el scoring usando:
   // - cuotaEstimada desde la simulación,
   // - datos del perfil del usuario (ingreso, antigüedad, deudas, edad, morosidad, protestos).
-  const handleCalcularScoring = async () => {
+  const handleCalcularScoring = useCallback(async () => {
     setErr("");
     setScoreResult(null);
 
@@ -111,9 +112,15 @@ function CreditApplication() {
     } catch (e) {
       setErr(e.message);
     }
-  };
+  }, [lastSim]);
 
   // Mientras se carga el estado de autenticación no se renderiza nada
+  useEffect(() => {
+    if (lastSim?.cuotaEstimada) {
+        handleCalcularScoring();
+    }
+  }, [lastSim, handleCalcularScoring]);
+  
   if (isLoading) return null;
 
   return (
@@ -124,53 +131,51 @@ function CreditApplication() {
           {/* Barra de navegación superior */}
           <Navbar />
 
-          {/* Contenedor principal de la solicitud de crédito */}
-          <div className="credit-application-wrapper">
-            {/* Resumen de la cuota estimada (si existe) */}
-            <p style={{ color: "white" }}>
-              Cuota estimada desde el simulador:{" "}
-              <strong>
-                {lastSim?.cuotaEstimada ? `$${lastSim.cuotaEstimada}` : "—"}
-              </strong>
-            </p>
-
-            {/* Mensaje de error visible si falta información o hubo fallo en la request */}
-            {err && (
-              <p style={{ color: "salmon", marginTop: 8 }}>
-                {String(err)}
-              </p>
-            )}
-
-            {/* Botón para ejecutar el cálculo de scoring */}
-            <button
-              onClick={handleCalcularScoring}
-              className="navbar-btn"
-              style={{ marginTop: 16 }}
-            >
-              Calcular scoring
-            </button>
-
-            {/* Resultado del scoring si la llamada fue exitosa */}
-            {scoreResult && (
-              <div style={{ marginTop: 20 }}>
-                <h3 style={{ color: "white" }}>
-                  Score: {scoreResult.score}
-                </h3>
-              </div>
-            )}
+          <div style={{ textAlign: "center", height: "48.3rem", paddingTop: "15rem"}}>
+            <GlassPanel>
+              {err && (
+                <p style={{ color: "salmon", marginTop: 8 }}>
+                  {String(err)}
+                </p>
+              )}
+              {scoreResult ? (
+                scoreResult.score > 70 ? (
+                    <>
+                      <h3>Felicidades, tu simulación ha sido aprobada</h3>
+                      <p>El siguiente paso será firmar los documentos del crédito.</p>
+                      <a className="navbar-btn" href="/docSign">Firmar documentos</a>
+                    </>
+                ) : (
+                    <>
+                      <h3>Lo lamentamos, no cumples con los requisitos para solicitar este préstamo</h3>
+                      <a className="navbar-btn" href="/simulator">Volver al simulador</a>
+                      <a className="navbar-btn" href="/">Volver al inicio</a>
+                    </>
+                )
+              ) : (
+                /* Estado de carga mientras scoreResult es null */
+                !err && (
+                  <div style={{ textAlign: "center", color: "white" }}>
+                    <h3>Analizando viabilidad...</h3>
+                    <p>Estamos procesando tu solicitud, por favor espera un momento.</p>
+                  </div>
+                )
+              )}
+            </GlassPanel>
           </div>
         </>
       ) : (
-        // Bloque para usuarios no autenticados o no clientes
         <>
-          <div className="alertAndRedirect">
-            <MiIcono className="alert-signal" />
-            <p className="alertText">
-              Para continuar con la solicitud debes iniciar sesión o registrarte
-            </p>
-            <a href="/login">Iniciar Sesión</a>
-            <a href="/register">Registrarse</a>
-          </div>
+          <GlassPanel>
+            <div className="alertAndRedirect">
+              <MiIcono className="alert-signal" />
+              <p className="alertText">
+                Para continuar con la solicitud debes iniciar sesión o registrarte
+              </p>
+              <a href="/login">Iniciar Sesión</a>
+              <a href="/register">Registrarse</a>
+            </div>
+          </GlassPanel>
         </>
       )}
     </div>

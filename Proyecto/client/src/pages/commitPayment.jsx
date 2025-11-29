@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import Navbar from "../components/Navbar";
+import GlassPanel from "../components/GlassPanel";
 
 const CommitPayment = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     
-    // 1. Capturamos los dos posibles tokens
     const token = searchParams.get("token_ws");      // Flujo normal (Aprobado o Rechazado por banco)
     const tbkToken = searchParams.get("TBK_TOKEN");  // Flujo abortado (Usuario hizo click en "Anular")
 
@@ -39,11 +40,9 @@ const CommitPayment = () => {
             });
             const result = await response.json();
             
-            // Validamos lo que responde el backend (SDK)
             if (result.details?.status === 'AUTHORIZED') {
                 setStatus("¡Pago Exitoso! Gracias por tu compra.");
                 setIsError(false);
-                // Aquí podrías vaciar el carrito, guardar orden en DB, etc.
             } else {
                 setStatus("El pago fue rechazado por el banco.");
                 setIsError(true);
@@ -56,22 +55,26 @@ const CommitPayment = () => {
     };
 
     return (
-        <div className="hero-card">
-            <h2 style={{ color: isError ? 'red' : 'green' }}>
+        <>
+        <Navbar />            
+        <div style={{ textAlign: "center", height: "48.3rem", paddingTop: "15rem"}}>
+            <GlassPanel>
+                <h2 style={{ color: isError ? 'red' : 'green' }}>
                 {status}
             </h2>
             
-            {/* Botón para volver a intentar o ir al inicio */}
             {isError && (
                 <button 
                     className="hero-btn" 
-                    onClick={() => navigate('/pay')} // O donde tengas el pago
+                    onClick={() => navigate('/pay')}
                     style={{ marginTop: '20px' }}
                 >
                     Volver
                 </button>
             )}
+            </GlassPanel>
         </div>
+        </>
     );
 };
 
