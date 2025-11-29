@@ -18,3 +18,5 @@ Para obtener más información sobre como levantar el proyecto de manera local p
 ### Prototipo del proyecto
 Con el objetivo de realizar un primer acercamiento con el producto final que se desarollará se creo el siguiente prototipo.\
 [Video explicativo del prototipo](https://drive.google.com/file/d/1roARHS0A0fR0vwQd785LMScExT9H5qQE/view)
+[Video demo 1](https://www.youtube.com/watch?v=qdB9Ptln8QQ&t=73s)
+[Video demo 2](https://www.youtube.com/watch?v=3qDBO7yZrQE&t=24s)
